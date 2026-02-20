@@ -32,10 +32,12 @@ body.home {
 }
 
 .home-container {
-    height: 100vh;
+    margin-top: 40px;
+    height: calc(100vh - 40px);
     display: flex;
-    align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 120px 80px;
 }
 
 .home-header {
@@ -108,11 +110,47 @@ body.home {
     cursor: pointer;
 }
 
-.home-container {
-    margin-top: 40px;
-    height: calc(100vh - 40px);
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    padding: 120px 80px;
+body[data-theme="dark"] {
+    background: #1e1e1e;
+    color: #cccccc;
+}
+
+body[data-theme="dark"] .home-links li {
+    color: #4fc1ff;
+}
+
+body[data-theme="dark"] .home-topbar {
+    background: #252526;
+    border-bottom: 1px solid #2d2d2d;
+}
+
+body[data-theme="dark"] .home-topbar-actions span {
+    color: #4fc1ff;
+}
+
+body[data-theme="light"] {
+    background: #ffffff;
+    color: #111111;
+}
+
+body[data-theme="light"] .home-links li {
+    color: #004675;
+}
+
+body[data-theme="light"] .home-topbar {
+    background: #ffffff;
+    border-bottom: 1px solid #ccc;
+}
+
+body[data-theme="light"] .home-topbar-actions span {
+    color: #004675;
+}
+
+body[data-theme="light"] .home-logo,
+body[data-theme="light"] .home-title {
+    color: #363636;
+}
+
+body[data-theme="light"] .home-section h2 {
+    color: #1182d3;
 }
