@@ -1,1 +1,118 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background: #1e1e1e;
+    color: #cccccc;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+}
+
+body.home {
+    margin: 0;
+    background: #1e1e1e;
+    color: #cccccc;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.home-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-header {
+    width: 420px;
+}
+
+.home-title {
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.home-section {
+    margin-bottom: 30px;
+}
+
+.home-section h2 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #9cdcfe;
+}
+
+.home-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.home-links li {
+    padding: 6px 0;
+    cursor: pointer;
+    color: #4fc1ff;
+    font-size: 14px;
+}
+
+.home-links li:hover {
+    text-decoration: underline;
+}
+
+.muted {
+    color: #666;
+    cursor: default;
+}
+
+.home-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: #252526;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid #2d2d2d;
+}
+
+.home-logo {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.home-topbar-actions span {
+    font-size: 14px;
+    color: #4fc1ff;
+    cursor: pointer;
+}
+
+.home-container {
+    margin-top: 40px;
+    height: calc(100vh - 40px);
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 120px 80px;
+}

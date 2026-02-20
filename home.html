@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Slate</title>
+</head>
+<body class="home">
+
+<div class="home-topbar">
+    <div class="home-logo">Slate</div>
+    <div class="home-topbar-actions">
+        <span id="theme-toggle">Toggle theme</span>
+    </div>
+</div>
+
+<div class="home-container">
+    <div class="home-content">
+        <h1 class="home-title">Welcome</h1>
+        <div class="home-section">
+            <h2>Start</h2>
+            <ul class="home-links">
+                <li data-action="new">New project</li>
+                <li data-action="open">Open last project</li>
+                <li class="muted">Open folder (coming soon)</li>
+            </ul>
+        </div>
+        <div class="home-section">
+            <h2>Recent</h2>
+            <ul id="recent-list" class="home-links">
+                <li class="muted">No recent project</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script src="home.js"></script>
+</body>
+</html>
