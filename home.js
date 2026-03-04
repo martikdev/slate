@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const [handle] = await window.showOpenFilePicker({ multiple: false })
             const file = await handle.getFile()
             addRecent(file.name, "file")
-            sessionStorage.setItem("slate_open_file", file.name)
+            sessionStorage.setItem("slate_project_open", "1")
             location.href = "index.html"
         } catch (e) {
             if (e.name !== "AbortError") console.error(e)
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const dirHandle = await window.showDirectoryPicker()
             addRecent(dirHandle.name, "folder")
-            sessionStorage.setItem("slate_open_folder", dirHandle.name)
+            sessionStorage.setItem("slate_project_open", "1")
             location.href = "index.html"
         } catch (e) {
             if (e.name !== "AbortError") console.error(e)

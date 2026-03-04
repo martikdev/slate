@@ -67,7 +67,10 @@
 
     <div class="main">
         <div id="tabBar" class="tab-bar"></div>
-        <textarea id="editor" placeholder="Open or create a file to start editing..."></textarea>
+        <div id="editor-container"></div>
+        <div id="editor-placeholder" class="editor-placeholder">
+            <span>Open or create a file to start editing</span>
+        </div>
     </div>
 
 </div>
@@ -98,6 +101,13 @@
     </div>
 </div>
 
+<script>
+    if (!sessionStorage.getItem("slate_project_open")) {
+        location.replace("home.html")
+    }
+</script>
+<script src="https://unpkg.com/monaco-editor@0.44.0/min/vs/loader.js"></script>
+<script src="editor.js"></script>
 <script src="sidebar.js"></script>
 </body>
 </html>

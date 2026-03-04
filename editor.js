@@ -1,44 +1,58 @@
-const explorerList = document.querySelector(".file-tree");
-const newFileBtn = document.getElementById("newFileBtn");
-const newFolderBtn = document.getElementById("newFolderBtn");
-const editorArea = document.getElementById("editor");
+window.editorReady = new Promise(resolve => {
+    require.config({ paths: { vs: 'https://unpkg.com/monaco-editor@0.44.0/min/vs' } })
+    require(['vs/editor/editor.main'], function () {
+        const savedTheme = localStorage.getItem('slate_theme') || 'dark'
+        const monacoTheme = savedTheme === 'light' ? 'vs' : 'vs-dark'
 
-let project = JSON.parse(localStorage.getItem("currentProject")) || { files: [] };
+        window.monacoEditor = monaco.editor.create(document.getElementById('editor-container'), {
+            value: '',
+            language: 'plaintext',
+            theme: monacoTheme,
+            automaticLayout: true,
+            fontSize: 15,
+            fontFamily: "'Fira Code', 'Cascadia Code', Consolas, 'Courier New', monospace",
+            fontLigatures: true,
+            lineNumbers: 'on',
+            minimap: { enabled: true },
+            scrollBeyondLastLine: false,
+            wordWrap: 'off',
+            readOnly: true,
+            renderWhitespace: 'selection',
+            smoothScrolling: true,
+            cursorBlinking: 'smooth',
+            bracketPairColorization: { enabled: true },
+            padding: { top: 12 },
+        })
 
-function renderExplorer() {
-    explorerList.innerHTML = "";
-    if(project.files.length === 0){
-        const li = document.createElement("li");
-        li.classList.add("muted");
-        li.textContent = "No files yet";
-        explorerList.appendChild(li);
-        return;
-    }
-    project.files.forEach(file => {
-        const li = document.createElement("li");
-        li.classList.add("file");
-        li.textContent = file.name;
-        li.addEventListener("click", () => {
-            editorArea.value = file.content || "";
-        });
-        explorerList.appendChild(li);
-    });
-}
+        window.setEditorTheme = (theme) => {
+            monaco.editor.setTheme(theme === 'light' ? 'vs' : 'vs-dark')
+        }
 
-newFileBtn.addEventListener("click", () => {
-    const name = prompt("Enter new file name");
-    if(!name) return;
-    project.files.push({ name, content: "" });
-    localStorage.setItem("currentProject", JSON.stringify(project));
-    renderExplorer();
-});
+        window.getEditorLanguage = (filename) => {
+            const ext = filename.split('.').pop().toLowerCase()
+            const map = {
+                js: 'javascript', jsx: 'javascript',
+                ts: 'typescript', tsx: 'typescript',
+                html: 'html', htm: 'html',
+                css: 'css', scss: 'scss', less: 'less',
+                json: 'json', jsonc: 'json',
+                md: 'markdown', markdown: 'markdown',
+                py: 'python',
+                xml: 'xml', svg: 'xml',
+                sql: 'sql',
+                sh: 'shell', bash: 'shell',
+                yaml: 'yaml', yml: 'yaml',
+                php: 'php',
+                c: 'c', cpp: 'cpp', h: 'c',
+                cs: 'csharp',
+                java: 'java',
+                go: 'go',
+                rs: 'rust',
+                txt: 'plaintext',
+            }
+            return map[ext] || 'plaintext'
+        }
 
-newFolderBtn.addEventListener("click", () => {
-    const name = prompt("Enter new folder name");
-    if(!name) return;
-    project.files.push({ name: name+"/", content: null });
-    localStorage.setItem("currentProject", JSON.stringify(project));
-    renderExplorer();
-});
-
-renderExplorer();
+        resolve(window.monacoEditor)
+    })
+})

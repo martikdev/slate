@@ -65,7 +65,7 @@
         <div class="home-section">
             <h2>Start</h2>
             <ul class="home-links">
-                <li onclick="localStorage.removeItem('slate_open_files'); location.href='index.html'">New project</li>
+                <li onclick="sessionStorage.setItem('slate_project_open','1'); localStorage.removeItem('slate_open_files'); location.href='index.html'">New project</li>
                 <li id="openFileLink">Open file</li>
                 <li id="openFolderLink">Open folder</li>
             </ul>

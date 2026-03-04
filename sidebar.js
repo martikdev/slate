@@ -17,6 +17,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const savedTheme = localStorage.getItem("slate_theme") || "dark"
     document.body.setAttribute("data-theme", savedTheme)
 
+    const themeToggleBtn = document.getElementById("theme-toggle")
+    if (themeToggleBtn) {
+        themeToggleBtn.onclick = () => {
+            const current = document.body.getAttribute("data-theme")
+            const next = current === "light" ? "dark" : "light"
+            document.body.setAttribute("data-theme", next)
+            localStorage.setItem("slate_theme", next)
+            if (window.setEditorTheme) window.setEditorTheme(next)
+        }
+    }
+
     const addTaskBtn = document.getElementById("addTaskBtn")
     const modal = document.getElementById("taskModal")
     const cancelBtn = document.getElementById("taskCancelBtn")
@@ -189,18 +200,34 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTasks()
 
     const fileTreeEl = document.getElementById("fileTree")
-    const editor = document.getElementById("editor")
     const newFileBtn = document.getElementById("newFileBtn")
     const newFolderBtn = document.getElementById("newFolderBtn")
     const openFileBtn = document.getElementById("openFileBtn")
     const openFolderBtn = document.getElementById("openFolderBtn")
     const tabBar = document.getElementById("tabBar")
+    const editorPlaceholder = document.getElementById("editor-placeholder")
 
     let openFiles = JSON.parse(localStorage.getItem("slate_open_files") || "[]").map(f => ({ ...f, handle: null, unsaved: false }))
     let currentIndex = openFiles.length > 0 ? 0 : null
     let currentDirHandle = null
     let tree = JSON.parse(localStorage.getItem("slate_tree") || "[]")
     let draggedPath = null
+    let monacoReady = false
+
+    window.editorReady.then(ed => {
+        monacoReady = true
+        ed.onDidChangeModelContent(() => {
+            if (currentIndex === null) return
+            const file = openFiles[currentIndex]
+            file.content = ed.getValue()
+            markUnsaved(currentIndex)
+            persistFiles()
+            const node = findTreeNodeByName(tree, file.name)
+            if (node) { node.content = ed.getValue(); persistTree() }
+        })
+        if (currentIndex !== null) setCurrentFile(currentIndex)
+        else showPlaceholder(true)
+    })
 
     function persistFiles() {
         localStorage.setItem("slate_open_files", JSON.stringify(openFiles.map(f => ({ name: f.name, content: f.content }))))
@@ -247,11 +274,22 @@ document.addEventListener("DOMContentLoaded", () => {
         setCurrentFile(openFiles.length - 1)
     }
 
+    function showPlaceholder(show) {
+        const container = document.getElementById("editor-container")
+        if (editorPlaceholder) editorPlaceholder.style.display = show ? "flex" : "none"
+        if (container) container.style.display = show ? "none" : "block"
+    }
+
     function setCurrentFile(index) {
         currentIndex = index
-        if (editor) {
-            editor.value = openFiles[index].content || ""
-            editor.disabled = false
+        const file = openFiles[index]
+        if (monacoReady && window.monacoEditor) {
+            showPlaceholder(false)
+            const lang = window.getEditorLanguage(file.name)
+            monaco.editor.setModelLanguage(window.monacoEditor.getModel(), lang)
+            window.monacoEditor.setValue(file.content || "")
+            window.monacoEditor.updateOptions({ readOnly: false })
+            window.monacoEditor.focus()
         }
         renderTabs()
         renderFileTree()
@@ -283,7 +321,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (currentIndex >= openFiles.length) currentIndex = openFiles.length - 1
                 if (openFiles.length === 0) {
                     currentIndex = null
-                    if (editor) { editor.value = ""; editor.disabled = true }
+                    if (window.monacoEditor) {
+                        window.monacoEditor.setValue("")
+                        window.monacoEditor.updateOptions({ readOnly: true })
+                    }
+                    showPlaceholder(true)
                     renderTabs()
                     renderFileTree()
                 } else {
@@ -601,19 +643,6 @@ document.addEventListener("DOMContentLoaded", () => {
         container.appendChild(li)
     }
 
-    if (editor) {
-        editor.disabled = currentIndex === null
-        editor.oninput = () => {
-            if (currentIndex === null) return
-            const file = openFiles[currentIndex]
-            file.content = editor.value
-            markUnsaved(currentIndex)
-            persistFiles()
-            const node = findTreeNodeByName(tree, file.name)
-            if (node) { node.content = editor.value; persistTree() }
-        }
-    }
-
     function findTreeNodeByName(nodes, name) {
         for (const node of nodes) {
             if (node.type === "file" && node.name === name) return node
@@ -673,6 +702,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 openFiles.push({ name: file.name, content, handle, unsaved: false })
                 addRecent(file.name, "file")
                 persistFiles()
+                await ensureWritePermission(handle)
                 setCurrentFile(openFiles.length - 1)
             } catch (e) {
                 if (e.name !== "AbortError") console.error(e)
@@ -686,6 +716,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 const dirHandle = await window.showDirectoryPicker()
                 currentDirHandle = dirHandle
                 addRecent(dirHandle.name, "folder")
+                openFiles = []
+                tree = []
+                if (window.monacoEditor) {
+                    window.monacoEditor.setValue("")
+                    window.monacoEditor.updateOptions({ readOnly: true })
+                }
+                showPlaceholder(true)
+                currentIndex = null
                 const folder = { type: "folder", name: dirHandle.name, expanded: true, children: [] }
                 for await (const entry of dirHandle.values()) {
                     if (entry.kind === "file") {
@@ -694,6 +732,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         folder.children.push({ type: "file", name: file.name, content })
                         if (!openFiles.find(f => f.name === file.name)) {
                             openFiles.push({ name: file.name, content, handle: entry, unsaved: false })
+                            await ensureWritePermission(entry)
                         }
                     }
                 }
@@ -707,23 +746,39 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    async function ensureWritePermission(handle) {
+        if (!handle) return false
+        const permission = await handle.queryPermission({ mode: "readwrite" })
+        if (permission === "granted") return true
+        const request = await handle.requestPermission({ mode: "readwrite" })
+        return request === "granted"
+    }
+
     async function saveCurrentFile() {
-        if (currentIndex === null) return
+        if (currentIndex === null || currentIndex >= openFiles.length) return
         const file = openFiles[currentIndex]
+        if (window.monacoEditor) file.content = window.monacoEditor.getValue()
         if (file.handle) {
-            const writable = await file.handle.createWritable()
-            await writable.write(file.content || "")
-            await writable.close()
-            file.unsaved = false
-            renderTabs()
+            try {
+                const ok = await ensureWritePermission(file.handle)
+                if (!ok) return
+                const writable = await file.handle.createWritable()
+                await writable.write(file.content || "")
+                await writable.close()
+                file.unsaved = false
+                renderTabs()
+            } catch (e) {
+                console.error(e)
+            }
         } else {
             await saveAs()
         }
     }
 
     async function saveAs() {
-        if (currentIndex === null) return
+        if (currentIndex === null || currentIndex >= openFiles.length) return
         const file = openFiles[currentIndex]
+        if (window.monacoEditor) file.content = window.monacoEditor.getValue()
         try {
             const handle = await window.showSaveFilePicker({
                 suggestedName: file.name,
@@ -735,6 +790,7 @@ document.addEventListener("DOMContentLoaded", () => {
             file.handle = handle
             file.name = handle.name
             file.unsaved = false
+            persistFiles()
             renderTabs()
             renderFileTree()
         } catch (e) {
@@ -752,5 +808,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderFileTree()
     renderTabs()
-    if (currentIndex !== null) setCurrentFile(currentIndex)
+
+    window.addEventListener("beforeunload", () => {
+        localStorage.removeItem("slate_open_files")
+        localStorage.removeItem("slate_tree")
+        sessionStorage.removeItem("slate_project_open")
+    })
 })
