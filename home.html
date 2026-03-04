@@ -1,39 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Slate</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slate Home</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://unpkg.com/@vscode/codicons/dist/codicon.css">
 </head>
 <body class="home">
 
-<div class="home-topbar">
-    <div class="home-logo">Slate</div>
-    <div class="home-topbar-actions">
-        <span id="theme-toggle">Toggle theme</span>
-    </div>
-</div>
+<div class="app">
 
-<div class="home-container">
-    <div class="home-content">
+    <div class="sidebar">
+        <div class="activity-bar">
+            <div class="activity-icon active" data-view="tasks">
+                <i class="codicon codicon-checklist"></i>
+            </div>
+            <div class="activity-icon" data-view="explorer">
+                <i class="codicon codicon-files"></i>
+            </div>
+            <div class="activity-icon" data-view="search">
+                <i class="codicon codicon-search"></i>
+            </div>
+            <div class="activity-icon" data-view="settings">
+                <i class="codicon codicon-settings-gear"></i>
+            </div>
+        </div>
+
+        <div class="sidebar-panel" data-view="tasks">
+            <div class="sidebar-header">Tasks</div>
+            <div class="sidebar-actions">
+                <button id="addTaskBtn">Add Task</button>
+            </div>
+            <div class="sidebar-content">
+                <ul id="tasksList" class="task-list"></ul>
+            </div>
+        </div>
+
+        <div class="sidebar-panel" data-view="explorer" style="display:none;">
+            <div class="sidebar-header">Explorer</div>
+            <div class="sidebar-content">
+                <p class="muted">Open or create a project</p>
+            </div>
+        </div>
+
+        <div class="sidebar-panel" data-view="search" style="display:none;">
+            <div class="sidebar-header">Search</div>
+            <div class="sidebar-content">
+                <p class="muted">Search coming later</p>
+            </div>
+        </div>
+
+        <div class="sidebar-panel" data-view="settings" style="display:none;">
+            <div class="sidebar-header">Settings</div>
+            <div class="sidebar-content">
+                <p class="muted">Settings coming later</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="home-container">
         <h1 class="home-title">Welcome</h1>
+
         <div class="home-section">
             <h2>Start</h2>
             <ul class="home-links">
-                <li data-action="new">New project</li>
-                <li data-action="open">Open last project</li>
-                <li class="muted">Open folder (coming soon)</li>
+                <li onclick="localStorage.removeItem('slate_open_files'); location.href='index.html'">New project</li>
+                <li id="openFileLink">Open file</li>
+                <li id="openFolderLink">Open folder</li>
             </ul>
         </div>
+
         <div class="home-section">
             <h2>Recent</h2>
-            <ul id="recent-list" class="home-links">
-                <li class="muted">No recent project</li>
-            </ul>
+            <ul id="recent-list" class="home-links"></ul>
+        </div>
+    </div>
+
+</div>
+
+<div class="task-modal" id="taskModal">
+    <div class="task-modal-content">
+        <h3>New Task</h3>
+        <label>
+            Title
+            <input type="text" id="taskTitle" placeholder="Task title">
+        </label>
+        <label>
+            Description
+            <textarea id="taskDesc" rows="3" placeholder="Optional description"></textarea>
+        </label>
+        <label>
+            Due Date
+            <input type="date" id="taskDate">
+        </label>
+        <label>
+            Color
+            <input type="color" id="taskColor" value="#22c55e">
+        </label>
+        <div class="task-modal-buttons">
+            <button id="taskCancelBtn">Cancel</button>
+            <button id="taskSubmitBtn">Add Task</button>
         </div>
     </div>
 </div>
+
+<script src="sidebar.js"></script>
 <script src="home.js"></script>
 </body>
 </html>

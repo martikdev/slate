@@ -1,48 +1,67 @@
-const recentList = document.getElementById("recent-list")
-const body = document.body
-const themeToggle = document.getElementById("theme-toggle")
+document.addEventListener("DOMContentLoaded", () => {
 
-let currentTheme = localStorage.getItem("theme") || "dark"
-body.dataset.theme = currentTheme
+    const recentList = document.getElementById("recent-list")
+    const openFileLink = document.getElementById("openFileLink")
+    const openFolderLink = document.getElementById("openFolderLink")
 
-themeToggle.onclick = () => {
-    currentTheme = currentTheme === "dark" ? "light" : "dark"
-    body.dataset.theme = currentTheme
-    localStorage.setItem("theme", currentTheme)
-}
+    function getRecents() {
+        return JSON.parse(localStorage.getItem("slate_recents") || "[]")
+    }
 
-document.querySelectorAll("[data-action]").forEach(item => {
-    item.onclick = () => {
-        const action = item.dataset.action
-        if (action === "new") {
-            const project = {
-                "index.html": "<!DOCTYPE html>\n<html>\n<head>\n<link rel='stylesheet' href='style.css'>\n</head>\n<body>\n<h1>Hello Slate</h1>\n<script src='script.js'></script>\n</body>\n</html>",
-                "style.css": "body { font-family: Arial; background: #1e1e1e; color: white; }",
-                "script.js": "console.log('Slate');"
-            }
-            localStorage.setItem("project", JSON.stringify(project))
-            window.location.href = "index.html"
+    function addRecent(name, type) {
+        const recents = getRecents().filter(r => r.name !== name)
+        recents.unshift({ name, type, time: Date.now() })
+        localStorage.setItem("slate_recents", JSON.stringify(recents.slice(0, 10)))
+    }
+
+    function renderRecents() {
+        if (!recentList) return
+        const recents = getRecents()
+        if (recents.length === 0) {
+            recentList.innerHTML = '<li class="muted">No recent projects</li>'
+            return
         }
-        if (action === "open") {
-            if (localStorage.getItem("project")) {
-                window.location.href = "index.html"
-            } else {
-                alert("No project found")
+        recentList.innerHTML = ""
+        recents.forEach(r => {
+            const li = document.createElement("li")
+            const icon = r.type === "folder" ? "codicon-folder" : "codicon-file"
+            li.innerHTML = '<i class="codicon ' + icon + '" style="margin-right:6px;font-size:13px;"></i>' + r.name
+            li.onclick = () => {
+                if (r.type === "folder") {
+                    openFolder()
+                } else {
+                    openFile()
+                }
             }
+            recentList.appendChild(li)
+        })
+    }
+
+    async function openFile() {
+        try {
+            const [handle] = await window.showOpenFilePicker({ multiple: false })
+            const file = await handle.getFile()
+            addRecent(file.name, "file")
+            sessionStorage.setItem("slate_open_file", file.name)
+            location.href = "index.html"
+        } catch (e) {
+            if (e.name !== "AbortError") console.error(e)
         }
     }
-})
 
-const saved = JSON.parse(localStorage.getItem("recentProjects") || "[]")
-if (saved.length) {
-    recentList.innerHTML = ""
-    saved.forEach(p => {
-        const li = document.createElement("li")
-        li.textContent = p.name
-        li.onclick = () => {
-            localStorage.setItem("project", JSON.stringify(p.files))
-            window.location.href = "index.html"
+    async function openFolder() {
+        try {
+            const dirHandle = await window.showDirectoryPicker()
+            addRecent(dirHandle.name, "folder")
+            sessionStorage.setItem("slate_open_folder", dirHandle.name)
+            location.href = "index.html"
+        } catch (e) {
+            if (e.name !== "AbortError") console.error(e)
         }
-        recentList.appendChild(li)
-    })
-}
+    }
+
+    if (openFileLink) openFileLink.onclick = openFile
+    if (openFolderLink) openFolderLink.onclick = openFolder
+
+    renderRecents()
+})

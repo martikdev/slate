@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slate</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://unpkg.com/@vscode/codicons/dist/codicon.css">
+</head>
+<body>
+
+<div class="app">
+
+    <div class="sidebar">
+        <div class="activity-bar">
+            <div class="activity-icon" data-view="tasks">
+                <i class="codicon codicon-checklist"></i>
+            </div>
+            <div class="activity-icon active" data-view="explorer">
+                <i class="codicon codicon-files"></i>
+            </div>
+            <div class="activity-icon" data-view="search">
+                <i class="codicon codicon-search"></i>
+            </div>
+            <div class="activity-icon" data-view="settings">
+                <i class="codicon codicon-settings-gear"></i>
+            </div>
+        </div>
+
+        <div class="sidebar-panel" data-view="tasks" style="display:none;">
+            <div class="sidebar-header">Tasks</div>
+            <div class="sidebar-actions">
+                <button id="addTaskBtn">Add Task</button>
+            </div>
+            <div class="sidebar-content">
+                <ul id="tasksList" class="task-list"></ul>
+            </div>
+        </div>
+
+        <div class="sidebar-panel" data-view="explorer">
+            <div class="sidebar-header">Explorer</div>
+            <div class="sidebar-actions">
+                <button id="newFileBtn" title="New File"><i class="codicon codicon-new-file"></i></button>
+                <button id="newFolderBtn" title="New Folder"><i class="codicon codicon-new-folder"></i></button>
+                <button id="openFileBtn" title="Open File"><i class="codicon codicon-go-to-file"></i></button>
+                <button id="openFolderBtn" title="Open Folder"><i class="codicon codicon-folder-opened"></i></button>
+            </div>
+            <div class="sidebar-content">
+                <ul id="fileTree" class="file-tree"></ul>
+            </div>
+        </div>
+
+        <div class="sidebar-panel" data-view="search" style="display:none;">
+            <div class="sidebar-header">Search</div>
+            <div class="sidebar-content">
+                <p class="muted">Search coming later</p>
+            </div>
+        </div>
+
+        <div class="sidebar-panel" data-view="settings" style="display:none;">
+            <div class="sidebar-header">Settings</div>
+            <div class="sidebar-content">
+                <p class="muted">Settings coming later</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="main">
+        <div id="tabBar" class="tab-bar"></div>
+        <textarea id="editor" placeholder="Open or create a file to start editing..."></textarea>
+    </div>
+
+</div>
+
+<div class="task-modal" id="taskModal">
+    <div class="task-modal-content">
+        <h3>New Task</h3>
+        <label>
+            Title
+            <input type="text" id="taskTitle" placeholder="Task title">
+        </label>
+        <label>
+            Description
+            <textarea id="taskDesc" rows="3" placeholder="Optional description"></textarea>
+        </label>
+        <label>
+            Due Date
+            <input type="date" id="taskDate">
+        </label>
+        <label>
+            Color
+            <input type="color" id="taskColor" value="#22c55e">
+        </label>
+        <div class="task-modal-buttons">
+            <button id="taskCancelBtn">Cancel</button>
+            <button id="taskSubmitBtn">Add Task</button>
+        </div>
+    </div>
+</div>
+
+<script src="sidebar.js"></script>
+</body>
+</html>
