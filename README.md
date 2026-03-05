@@ -18,9 +18,9 @@ Slate, a vscode like code editor with a live preview, a terminal, and more featu
 
 **Preview**
 
-[preview-image1](/images/preview-image1.png)
+![preview-image1](/images/preview-image1.png)
 
-[preview-image2](/images/preview-image2.png)
+![preview-image2](/images/preview-image2.png)
 
 **Links**
 
