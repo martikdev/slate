@@ -75,6 +75,7 @@
 
 </div>
 
+
 <div class="task-modal" id="taskModal">
     <div class="task-modal-content">
         <h3>New Task</h3>
@@ -101,8 +102,10 @@
     </div>
 </div>
 
+<div id="ac"></div>
+
 <script>
-    if (!sessionStorage.getItem("slate_project_open")) {
+    if (!localStorage.getItem("slate_project_open")) {
         location.replace("home.html")
     }
 </script>
