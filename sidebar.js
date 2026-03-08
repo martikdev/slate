@@ -472,14 +472,19 @@ document.addEventListener("DOMContentLoaded", () => {
                     const openIdx = openFiles.findIndex(f => f.name === node.name)
                     if (openIdx !== -1) {
                         openFiles.splice(openIdx, 1)
-                        if (currentIndex >= openFiles.length) currentIndex = openFiles.length - 1
                         if (openFiles.length === 0) {
                             currentIndex = null
-                            if (editor) { editor.value = ""; editor.disabled = true }
+                            if (window.monacoEditor) {
+                                window.monacoEditor.setValue("")
+                                window.monacoEditor.updateOptions({ readOnly: true })
+                            }
+                            showPlaceholder(true)
                         } else {
+                            if (currentIndex >= openFiles.length) currentIndex = openFiles.length - 1
                             setCurrentFile(currentIndex)
                         }
                         persistFiles()
+                        renderTabs()
                     }
                     persistTree()
                     renderFileTree()
@@ -687,61 +692,130 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("slate_recents", JSON.stringify(recents.slice(0, 10)))
     }
 
+    const fileInput = document.createElement("input")
+    fileInput.type = "file"
+    fileInput.style.display = "none"
+    document.body.appendChild(fileInput)
+
+    const folderInput = document.createElement("input")
+    folderInput.type = "file"
+    folderInput.webkitdirectory = true
+    folderInput.style.display = "none"
+    document.body.appendChild(folderInput)
+
+    function readFileViaInput(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onload = e => resolve(e.target.result)
+            reader.onerror = reject
+            reader.readAsText(file)
+        })
+    }
+
     if (openFileBtn) {
         openFileBtn.onclick = async () => {
-            try {
-                const [handle] = await window.showOpenFilePicker({ multiple: false })
-                const file = await handle.getFile()
-                const content = await file.text()
-                const existing = openFiles.findIndex(f => f.name === file.name)
-                if (existing !== -1) { setCurrentFile(existing); return }
-                if (!findTreeNodeByName(tree, file.name)) {
-                    tree.push({ type: "file", name: file.name, content })
-                    persistTree()
+            if (window.showOpenFilePicker) {
+                try {
+                    const [handle] = await window.showOpenFilePicker({ multiple: false })
+                    const file = await handle.getFile()
+                    const content = await file.text()
+                    const existing = openFiles.findIndex(f => f.name === file.name)
+                    if (existing !== -1) { setCurrentFile(existing); return }
+                    if (!findTreeNodeByName(tree, file.name)) {
+                        tree.push({ type: "file", name: file.name, content })
+                        persistTree()
+                    }
+                    openFiles.push({ name: file.name, content, handle, unsaved: false })
+                    addRecent(file.name, "file")
+                    persistFiles()
+                    await ensureWritePermission(handle)
+                    setCurrentFile(openFiles.length - 1)
+                } catch (e) {
+                    if (e.name !== "AbortError") console.error(e)
                 }
-                openFiles.push({ name: file.name, content, handle, unsaved: false })
-                addRecent(file.name, "file")
-                persistFiles()
-                await ensureWritePermission(handle)
-                setCurrentFile(openFiles.length - 1)
-            } catch (e) {
-                if (e.name !== "AbortError") console.error(e)
+            } else {
+                fileInput.value = ""
+                fileInput.onchange = async () => {
+                    const file = fileInput.files[0]
+                    if (!file) return
+                    const content = await readFileViaInput(file)
+                    const existing = openFiles.findIndex(f => f.name === file.name)
+                    if (existing !== -1) { setCurrentFile(existing); return }
+                    if (!findTreeNodeByName(tree, file.name)) {
+                        tree.push({ type: "file", name: file.name, content })
+                        persistTree()
+                    }
+                    openFiles.push({ name: file.name, content, handle: null, unsaved: false })
+                    addRecent(file.name, "file")
+                    persistFiles()
+                    setCurrentFile(openFiles.length - 1)
+                }
+                fileInput.click()
             }
         }
     }
 
     if (openFolderBtn) {
         openFolderBtn.onclick = async () => {
-            try {
-                const dirHandle = await window.showDirectoryPicker()
-                currentDirHandle = dirHandle
-                addRecent(dirHandle.name, "folder")
-                openFiles = []
-                tree = []
-                if (window.monacoEditor) {
-                    window.monacoEditor.setValue("")
-                    window.monacoEditor.updateOptions({ readOnly: true })
-                }
-                showPlaceholder(true)
-                currentIndex = null
-                const folder = { type: "folder", name: dirHandle.name, expanded: true, children: [] }
-                for await (const entry of dirHandle.values()) {
-                    if (entry.kind === "file") {
-                        const file = await entry.getFile()
-                        const content = await file.text()
-                        folder.children.push({ type: "file", name: file.name, content })
-                        if (!openFiles.find(f => f.name === file.name)) {
-                            openFiles.push({ name: file.name, content, handle: entry, unsaved: false })
-                            await ensureWritePermission(entry)
+            if (window.showDirectoryPicker) {
+                try {
+                    const dirHandle = await window.showDirectoryPicker()
+                    currentDirHandle = dirHandle
+                    addRecent(dirHandle.name, "folder")
+                    openFiles = []
+                    tree = []
+                    if (window.monacoEditor) {
+                        window.monacoEditor.setValue("")
+                        window.monacoEditor.updateOptions({ readOnly: true })
+                    }
+                    showPlaceholder(true)
+                    currentIndex = null
+                    const folder = { type: "folder", name: dirHandle.name, expanded: true, children: [] }
+                    for await (const entry of dirHandle.values()) {
+                        if (entry.kind === "file") {
+                            const file = await entry.getFile()
+                            const content = await file.text()
+                            folder.children.push({ type: "file", name: file.name, content })
+                            if (!openFiles.find(f => f.name === file.name)) {
+                                openFiles.push({ name: file.name, content, handle: entry, unsaved: false })
+                                await ensureWritePermission(entry)
+                            }
                         }
                     }
+                    tree.push(folder)
+                    persistTree()
+                    persistFiles()
+                    if (openFiles.length > 0) setCurrentFile(0)
+                } catch (e) {
+                    if (e.name !== "AbortError") console.error(e)
                 }
-                tree.push(folder)
-                persistTree()
-                persistFiles()
-                if (openFiles.length > 0) setCurrentFile(0)
-            } catch (e) {
-                if (e.name !== "AbortError") console.error(e)
+            } else {
+                folderInput.value = ""
+                folderInput.onchange = async () => {
+                    const files = Array.from(folderInput.files)
+                    if (!files.length) return
+                    openFiles = []
+                    tree = []
+                    if (window.monacoEditor) {
+                        window.monacoEditor.setValue("")
+                        window.monacoEditor.updateOptions({ readOnly: true })
+                    }
+                    showPlaceholder(true)
+                    currentIndex = null
+                    const folderName = files[0].webkitRelativePath.split("/")[0]
+                    const folder = { type: "folder", name: folderName, expanded: true, children: [] }
+                    for (const file of files) {
+                        const content = await readFileViaInput(file)
+                        folder.children.push({ type: "file", name: file.name, content })
+                        openFiles.push({ name: file.name, content, handle: null, unsaved: false })
+                    }
+                    addRecent(folderName, "folder")
+                    tree.push(folder)
+                    persistTree()
+                    persistFiles()
+                    if (openFiles.length > 0) setCurrentFile(0)
+                }
+                folderInput.click()
             }
         }
     }
@@ -809,9 +883,5 @@ document.addEventListener("DOMContentLoaded", () => {
     renderFileTree()
     renderTabs()
 
-    window.addEventListener("beforeunload", () => {
-        localStorage.removeItem("slate_open_files")
-        localStorage.removeItem("slate_tree")
-        sessionStorage.removeItem("slate_project_open")
-    })
+
 })
