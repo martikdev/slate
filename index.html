@@ -66,10 +66,42 @@
     </div>
 
     <div class="main">
-        <div id="tabBar" class="tab-bar"></div>
-        <div id="editor-container"></div>
-        <div id="editor-placeholder" class="editor-placeholder">
-            <span>Open or create a file to start editing</span>
+        <div id="tabBar" class="tab-bar">
+            <button id="previewToggle" title="Toggle Preview (Alt+P)" class="preview-toggle-btn"><i class="codicon codicon-open-preview"></i><span class="preview-toggle-label">Preview</span></button>
+        </div>
+        <div id="editor-preview-split" class="editor-preview-split">
+            <div id="editor-pane" class="editor-pane">
+                <div id="editor-container"></div>
+                <div id="editor-placeholder" class="editor-placeholder">
+                    <span>Open or create a file to start editing</span>
+                </div>
+            </div>
+            <div id="preview-resizer" class="preview-resizer" style="display:none"></div>
+            <div id="preview-pane" class="preview-pane" style="display:none">
+                <div class="preview-topbar">
+                    <span class="preview-title"><i class="codicon codicon-open-preview"></i> Preview</span>
+<div class="preview-topbar-actions">
+                        <button id="previewConsoleToggle" class="preview-topbar-btn" title="Toggle Console"><i class="codicon codicon-terminal"></i></button>
+                        <button id="previewRefresh" class="preview-topbar-btn" title="Refresh"><i class="codicon codicon-refresh"></i></button>
+                        <button id="previewNewTab" class="preview-topbar-btn" title="Open in new tab"><i class="codicon codicon-link-external"></i></button>
+                        <button id="previewClose" class="preview-topbar-btn" title="Close preview"><i class="codicon codicon-close"></i></button>
+                    </div>
+                </div>
+                <div id="preview-frame-wrap" class="preview-frame-wrap">
+                    <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
+                </div>
+                <div id="preview-placeholder" class="preview-placeholder">
+                    <i class="codicon codicon-eye-closed" style="font-size:32px;margin-bottom:8px;opacity:0.4"></i>
+                    <span>Preview only available for HTML files</span>
+                </div>
+                <div id="preview-console" class="preview-console" style="display:none">
+                    <div class="preview-console-toolbar">
+                        <span class="preview-console-title">Console</span>
+                        <button id="previewConsoleClear" class="preview-topbar-btn" title="Clear"><i class="codicon codicon-clear-all"></i></button>
+                    </div>
+                    <div id="preview-console-output" class="preview-console-output"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -112,5 +144,6 @@
 <script src="https://unpkg.com/monaco-editor@0.44.0/min/vs/loader.js"></script>
 <script src="editor.js"></script>
 <script src="sidebar.js"></script>
+<script src="preview.js"></script>
 </body>
 </html>
