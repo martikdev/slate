@@ -46,7 +46,7 @@ window.editorReady = new Promise(resolve => {
             fontSize: 14,
             fontFamily: "Consolas, 'Courier New', monospace",
             lineNumbers: 'on',
-            minimap: { enabled: true },
+            minimap: { enabled: false },
             scrollBeyondLastLine: false,
             readOnly: true,
             smoothScrolling: true,
@@ -688,6 +688,8 @@ window.editorReady = new Promise(resolve => {
             const rect = document.getElementById('editor-container').getBoundingClientRect()
             acShow(matches, rect.left + coords.left, rect.top + coords.top + coords.height + 2, startCol)
         })
+
+
         const VOID_TAGS = new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr'])
         window.monacoEditor.onKeyDown(e => {
             if (e.keyCode !== 84) return
@@ -710,6 +712,30 @@ window.editorReady = new Promise(resolve => {
                 ed.setPosition(newPos)
                 acHide()
             }, 0)
+        })
+
+        window.monacoEditor.addAction({
+            id: 'slate.openPreview',
+            label: 'Open Preview',
+            contextMenuGroupId: 'navigation',
+            contextMenuOrder: 1,
+            precondition: null,
+            keybindingContext: null,
+            run: (ed) => {
+                setTimeout(() => { if (window.openPreview) window.openPreview() }, 0)
+            }
+        })
+
+        window.monacoEditor.addAction({
+            id: 'slate.openPreviewNewTab',
+            label: 'Open Preview in New Tab',
+            contextMenuGroupId: 'navigation',
+            contextMenuOrder: 2,
+            precondition: null,
+            keybindingContext: null,
+            run: (ed) => {
+                setTimeout(() => { if (window.openPreviewNewTab) window.openPreviewNewTab() }, 0)
+            }
         })
 
         resolve(window.monacoEditor)
