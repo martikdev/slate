@@ -10,9 +10,7 @@ Slate, a vscode like code editor with a live preview, a terminal, and more featu
 
 ## Future improvements
 
-* Preview of the code
 * GitHub linking instead of opening a folder
-* open preview in another tab
 
 ## Preview & Links
 
