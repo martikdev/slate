@@ -2,15 +2,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const activityIcons = document.querySelectorAll(".activity-icon[data-view]")
     const panels = document.querySelectorAll(".sidebar-panel")
+    const sidebarPanelContainer = document.querySelector(".sidebar")
+
+    let activeView = "explorer"
+
+    function setSidebarView(view) {
+        activityIcons.forEach(i => i.classList.remove("active"))
+        panels.forEach(p => { p.style.display = "none" })
+        if (view) {
+            const icon = document.querySelector('.activity-icon[data-view="' + view + '"]')
+            if (icon) icon.classList.add("active")
+            const panel = document.querySelector('.sidebar-panel[data-view="' + view + '"]')
+            if (panel) panel.style.display = "flex"
+            sidebarPanelContainer.style.width = ""
+        } else {
+            sidebarPanelContainer.style.width = "52px"
+        }
+        activeView = view
+    }
 
     activityIcons.forEach(icon => {
         icon.onclick = () => {
-            activityIcons.forEach(i => i.classList.remove("active"))
-            icon.classList.add("active")
             const view = icon.dataset.view
-            panels.forEach(p => {
-                p.style.display = p.dataset.view === view ? "flex" : "none"
-            })
+            if (activeView === view) {
+                setSidebarView(null)
+            } else {
+                setSidebarView(view)
+            }
         }
     })
 
@@ -213,15 +231,17 @@ document.addEventListener("DOMContentLoaded", () => {
     let tree = JSON.parse(localStorage.getItem("slate_tree") || "[]")
     let draggedPath = null
     let monacoReady = false
+    let suppressChange = false
 
     window.editorReady.then(ed => {
         monacoReady = true
         ed.onDidChangeModelContent(() => {
-            if (currentIndex === null) return
+            if (suppressChange || currentIndex === null) return
             const file = openFiles[currentIndex]
             file.content = ed.getValue()
             markUnsaved(currentIndex)
             persistFiles()
+            if (window.triggerPreviewUpdate) window.triggerPreviewUpdate()
             const node = findTreeNodeByName(tree, file.name)
             if (node) { node.content = ed.getValue(); persistTree() }
         })
@@ -287,9 +307,13 @@ document.addEventListener("DOMContentLoaded", () => {
             showPlaceholder(false)
             const lang = window.getEditorLanguage(file.name)
             monaco.editor.setModelLanguage(window.monacoEditor.getModel(), lang)
+            suppressChange = true
             window.monacoEditor.setValue(file.content || "")
+            suppressChange = false
+            window.__slateCurrentFileName = file.name
             window.monacoEditor.updateOptions({ readOnly: false })
             window.monacoEditor.focus()
+            if (window.updatePreviewLang) window.updatePreviewLang(lang)
         }
         renderTabs()
         renderFileTree()
@@ -333,6 +357,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 persistFiles()
             }
+
+            tab.addEventListener('contextmenu', e => {
+                if (!file.name.endsWith('.html')) return
+                showContextMenu(e, [
+                    { icon: 'codicon-open-preview', label: 'Open Preview', action: () => { setCurrentFile(index); setTimeout(() => { if (window.openPreview) window.openPreview() }, 80) } },
+                    { icon: 'codicon-link-external', label: 'Open Preview in New Tab', action: () => { setCurrentFile(index); setTimeout(() => { if (window.openPreviewNewTab) window.openPreviewNewTab() }, 80) } },
+                ])
+            })
 
             tab.appendChild(label)
             tab.appendChild(close)
@@ -412,11 +444,13 @@ document.addEventListener("DOMContentLoaded", () => {
             el.onclick = () => { hideContextMenu(); item.action() }
             contextMenu.appendChild(el)
         })
+        contextMenu.style.left = "-9999px"
+        contextMenu.style.top = "-9999px"
         contextMenu.style.display = "block"
-        const x = Math.min(e.clientX, window.innerWidth - contextMenu.offsetWidth - 8)
-        const y = Math.min(e.clientY, window.innerHeight - contextMenu.offsetHeight - 8)
-        contextMenu.style.left = x + "px"
-        contextMenu.style.top = y + "px"
+        const w = contextMenu.offsetWidth
+        const h = contextMenu.offsetHeight
+        contextMenu.style.left = Math.min(e.clientX, window.innerWidth - w - 8) + "px"
+        contextMenu.style.top = Math.min(e.clientY, window.innerHeight - h - 8) + "px"
     }
 
     function hideContextMenu() {
@@ -427,11 +461,23 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") hideContextMenu() })
 
     function fileContextMenu(e, node, path) {
-        showContextMenu(e, [
+        const isHtml = node.name.endsWith('.html')
+        const items = [
             {
                 icon: "codicon-go-to-file", label: "Open",
                 action: () => openFileInEditor(node.name, node.content)
             },
+        ]
+        if (isHtml) {
+            items.push({
+                icon: "codicon-open-preview", label: "Open Preview",
+                action: () => {
+                    openFileInEditor(node.name, node.content)
+                    setTimeout(() => { if (window.openPreview) window.openPreview() }, 80)
+                }
+            })
+        }
+        items.push(
             {
                 icon: "codicon-edit", label: "Rename",
                 action: () => {
@@ -490,7 +536,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     renderFileTree()
                 }
             }
-        ])
+        )
+        showContextMenu(e, items)
     }
 
     function folderContextMenu(e, node, path) {
@@ -840,12 +887,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 await writable.write(file.content || "")
                 await writable.close()
                 file.unsaved = false
+                persistFiles()
                 renderTabs()
+                if (window.triggerPreviewUpdate) window.triggerPreviewUpdate()
             } catch (e) {
                 console.error(e)
             }
         } else {
-            await saveAs()
+            file.unsaved = false
+            persistFiles()
+            renderTabs()
+            if (window.triggerPreviewUpdate) window.triggerPreviewUpdate()
         }
     }
 
