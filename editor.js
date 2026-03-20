@@ -17,22 +17,29 @@ window.editorReady = new Promise(resolve => {
         monaco.editor.defineTheme('slate-dark', {
             base: 'vs-dark', inherit: true, rules: [],
             colors: {
-                'editor.background': '#1e1e1e',
-                'editor.foreground': '#cccccc',
-                'editorCursor.foreground': '#4fc1ff',
-                'editor.selectionBackground': '#264f78',
-                'editorLineNumber.foreground': '#4a4a4a',
-                'editorLineNumber.activeForeground': '#cccccc',
+                'editor.background': '#18161f',
+                'editor.foreground': '#c4b8e0',
+                'editorCursor.foreground': '#a78bfa',
+                'editor.selectionBackground': '#3d2f6e',
+                'editorLineNumber.foreground': '#4a3f6a',
+                'editorLineNumber.activeForeground': '#a78bfa',
+                'editorIndentGuide.background': '#2d2840',
+                'editorIndentGuide.activeBackground': '#4a3f6a',
+                'editor.lineHighlightBackground': '#201d2b',
+                'editorGutter.background': '#18161f',
             }
         })
 
         monaco.editor.defineTheme('slate-light', {
             base: 'vs', inherit: true, rules: [],
             colors: {
-                'editor.background': '#ffffff',
-                'editor.foreground': '#1f1f1f',
-                'editorCursor.foreground': '#007acc',
-                'editor.selectionBackground': '#add6ff',
+                'editor.background': '#faf9fe',
+                'editor.foreground': '#2d2542',
+                'editorCursor.foreground': '#7c5cfa',
+                'editor.selectionBackground': '#dcd5ff',
+                'editorLineNumber.foreground': '#a090c0',
+                'editorLineNumber.activeForeground': '#7c5cfa',
+                'editor.lineHighlightBackground': '#f0eef8',
             }
         })
 
