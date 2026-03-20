@@ -1,22 +1,39 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+    function getUser() { return localStorage.getItem('slate_user') || '__guest__' }
+    function ukey(k)   { return k + '_' + getUser() }
+
     const activityIcons = document.querySelectorAll(".activity-icon[data-view]")
     const panels = document.querySelectorAll(".sidebar-panel")
     const sidebarPanelContainer = document.querySelector(".sidebar")
 
     let activeView = "explorer"
+    const initialPanel = document.querySelector('.sidebar-panel[data-view="explorer"]')
+    if (initialPanel) initialPanel.classList.add("panel-visible")
 
     function setSidebarView(view) {
         activityIcons.forEach(i => i.classList.remove("active"))
-        panels.forEach(p => { p.style.display = "none" })
+
         if (view) {
             const icon = document.querySelector('.activity-icon[data-view="' + view + '"]')
             if (icon) icon.classList.add("active")
-            const panel = document.querySelector('.sidebar-panel[data-view="' + view + '"]')
-            if (panel) panel.style.display = "flex"
-            sidebarPanelContainer.style.width = ""
+            sidebarPanelContainer.classList.remove("sidebar-collapsed")
+
+            panels.forEach(p => {
+                if (p.dataset.view === view) {
+                    p.style.display = "flex"
+                    requestAnimationFrame(() => p.classList.add("panel-visible"))
+                } else {
+                    p.classList.remove("panel-visible")
+                    p.style.display = "none"
+                }
+            })
         } else {
-            sidebarPanelContainer.style.width = "52px"
+            panels.forEach(p => {
+                p.classList.remove("panel-visible")
+                p.style.display = "none"
+            })
+            sidebarPanelContainer.classList.add("sidebar-collapsed")
         }
         activeView = view
     }
@@ -61,6 +78,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (addTaskBtn && modal) {
         addTaskBtn.onclick = () => {
             editingLi = null
+            const t = document.getElementById('taskModalTitle')
+            if (t) t.textContent = 'New Task'
+            const s = document.getElementById('taskSubmitBtn')
+            if (s) s.textContent = 'Add Task'
             modal.style.display = "flex"
             setTimeout(() => { if (titleInput) titleInput.focus() }, 50)
         }
@@ -68,6 +89,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (cancelBtn) {
         cancelBtn.onclick = () => {
+            modal.style.display = "none"
+            editingLi = null
+            clearForm()
+        }
+    }
+
+    const cancelFooterBtn = document.getElementById("taskCancelFooterBtn")
+    if (cancelFooterBtn) {
+        cancelFooterBtn.onclick = () => {
             modal.style.display = "none"
             editingLi = null
             clearForm()
@@ -106,10 +136,27 @@ document.addEventListener("DOMContentLoaded", () => {
         if (dateInput) dateInput.value = ""
     }
 
+    function isOverdueDate(date) {
+        if (!date) return false
+        const today = new Date(); today.setHours(0,0,0,0)
+        return new Date(date) < today
+    }
+
+    function refreshOverdue() {
+        document.querySelectorAll('.task-item').forEach(t => {
+            const isDone = t.classList.contains('task-done')
+            const overdue = !isDone && isOverdueDate(t.dataset.date)
+            t.classList.toggle('task-overdue', overdue)
+        })
+        updateTaskStats()
+        applyTaskFilter()
+    }
+
     function createTask(title, desc, date, color, done = false) {
         if (!tasksList) return
         const li = document.createElement("li")
-        li.className = "task-item" + (done ? " task-done" : "")
+        const overdue = !done && isOverdueDate(date)
+        li.className = "task-item" + (done ? " task-done" : "") + (overdue ? " task-overdue" : "")
         li.dataset.title = title
         li.dataset.desc = desc || ""
         li.dataset.date = date || ""
@@ -156,7 +203,9 @@ document.addEventListener("DOMContentLoaded", () => {
         doneBtn.onclick = (e) => {
             e.stopPropagation()
             li.classList.toggle("task-done")
+            li.classList.toggle("task-overdue", !li.classList.contains("task-done") && isOverdueDate(li.dataset.date))
             saveTasks()
+            applyTaskFilter()
         }
 
         const editBtn = document.createElement("button")
@@ -166,6 +215,10 @@ document.addEventListener("DOMContentLoaded", () => {
         editBtn.onclick = (e) => {
             e.stopPropagation()
             editingLi = li
+            const t = document.getElementById('taskModalTitle')
+            if (t) t.textContent = 'Edit Task'
+            const s = document.getElementById('taskSubmitBtn')
+            if (s) s.textContent = 'Save'
             titleInput.value = title
             if (descInput) descInput.value = desc || ""
             if (dateInput) dateInput.value = date || ""
@@ -206,13 +259,59 @@ document.addEventListener("DOMContentLoaded", () => {
                 done: t.classList.contains("task-done")
             })
         })
-        localStorage.setItem("slate_tasks", JSON.stringify(data))
+        localStorage.setItem(ukey('slate_tasks'), JSON.stringify(data))
+        updateTaskStats()
+    }
+
+    function updateTaskStats() {
+        const items = document.querySelectorAll(".task-item")
+        const today = new Date(); today.setHours(0,0,0,0)
+        let total = 0, done = 0, overdue = 0
+        items.forEach(t => {
+            total++
+            const isDone = t.classList.contains("task-done")
+            if (isDone) { done++; return }
+            if (t.dataset.date) {
+                const due = new Date(t.dataset.date)
+                if (due < today) overdue++
+            }
+        })
+        const tn = document.getElementById('statTotalNum')
+        const dn = document.getElementById('statDoneNum')
+        const on = document.getElementById('statOverdueNum')
+        if (tn) tn.textContent = total
+        if (dn) dn.textContent = done
+        if (on) on.textContent = overdue
+    }
+
+    let activeTaskFilter = 'all'
+    document.querySelectorAll('.tasks-filter-btn').forEach(btn => {
+        btn.onclick = () => {
+            activeTaskFilter = btn.dataset.filter
+            document.querySelectorAll('.tasks-filter-btn').forEach(b => b.classList.remove('active'))
+            btn.classList.add('active')
+            applyTaskFilter()
+        }
+    })
+
+    function applyTaskFilter() {
+        const today = new Date(); today.setHours(0,0,0,0)
+        document.querySelectorAll('.task-item').forEach(t => {
+            const isDone = t.classList.contains('task-done')
+            const isOverdue = !isDone && t.dataset.date && new Date(t.dataset.date) < today
+            let show = true
+            if (activeTaskFilter === 'done')    show = isDone
+            if (activeTaskFilter === 'open')    show = !isDone
+            if (activeTaskFilter === 'overdue') show = isOverdue
+            t.style.display = show ? '' : 'none'
+        })
     }
 
     function loadTasks() {
         if (!tasksList) return
-        const data = JSON.parse(localStorage.getItem("slate_tasks") || "[]")
+        const data = JSON.parse(localStorage.getItem(ukey('slate_tasks')) || '[]')
         data.forEach(t => createTask(t.title, t.desc, t.date, t.color, t.done))
+        refreshOverdue()
     }
 
     loadTasks()
@@ -225,10 +324,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const tabBar = document.getElementById("tabBar")
     const editorPlaceholder = document.getElementById("editor-placeholder")
 
-    let openFiles = JSON.parse(localStorage.getItem("slate_open_files") || "[]").map(f => ({ ...f, handle: null, unsaved: false }))
+    let openFiles = JSON.parse(localStorage.getItem(ukey('slate_open_files')) || '[]').map(f => ({ ...f, handle: null, unsaved: false }))
     let currentIndex = openFiles.length > 0 ? 0 : null
     let currentDirHandle = null
-    let tree = JSON.parse(localStorage.getItem("slate_tree") || "[]")
+    let tree = JSON.parse(localStorage.getItem(ukey('slate_tree')) || '[]')
     let draggedPath = null
     let monacoReady = false
     let suppressChange = false
@@ -250,11 +349,11 @@ document.addEventListener("DOMContentLoaded", () => {
     })
 
     function persistFiles() {
-        localStorage.setItem("slate_open_files", JSON.stringify(openFiles.map(f => ({ name: f.name, content: f.content }))))
+        localStorage.setItem(ukey('slate_open_files'), JSON.stringify(openFiles.map(f => ({ name: f.name, content: f.content }))))
     }
 
     function persistTree() {
-        localStorage.setItem("slate_tree", JSON.stringify(tree))
+        localStorage.setItem(ukey('slate_tree'), JSON.stringify(tree))
     }
 
     function findNodeByPath(nodes, path) {
@@ -303,6 +402,24 @@ document.addEventListener("DOMContentLoaded", () => {
     function setCurrentFile(index) {
         currentIndex = index
         const file = openFiles[index]
+        if (typeof isImageFile === 'function' && isImageFile(file.name)) {
+            if (typeof hideImagePreview === 'function') hideImagePreview()
+            if (typeof showImagePreview === 'function') showImagePreview(file.name, file.content)
+            renderTabs()
+            renderFileTree()
+            if (window.updatePreviewLang) window.updatePreviewLang('plaintext')
+            return
+        }
+        if (typeof hideImagePreview === 'function') hideImagePreview()
+        if (isImageFile && isImageFile(file.name)) {
+            hideImagePreview && hideImagePreview()
+            showImagePreview(file.name, file.content)
+            renderTabs()
+            renderFileTree()
+            if (window.updatePreviewLang) window.updatePreviewLang('plaintext')
+            return
+        }
+        hideImagePreview && hideImagePreview()
         if (monacoReady && window.monacoEditor) {
             showPlaceholder(false)
             const lang = window.getEditorLanguage(file.name)
@@ -324,17 +441,30 @@ document.addEventListener("DOMContentLoaded", () => {
         renderTabs()
     }
 
+    let dragSrcIndex = null
+
     function renderTabs() {
         if (!tabBar) return
         tabBar.innerHTML = ""
+
         openFiles.forEach((file, index) => {
             const tab = document.createElement("div")
             tab.className = "tab" + (index === currentIndex ? " active" : "")
+            tab.draggable = true
+
+            const iconEl = document.createElement("i")
+            iconEl.className = "tab-icon"
+            applyFileIcon(iconEl, file.name)
 
             const label = document.createElement("span")
             label.className = "tab-label"
             label.textContent = (file.unsaved ? "● " : "") + file.name
-            label.onclick = () => setCurrentFile(index)
+
+            const inner = document.createElement("span")
+            inner.style.cssText = "display:flex;align-items:center;min-width:0;overflow:hidden;"
+            inner.appendChild(iconEl)
+            inner.appendChild(label)
+            inner.onclick = () => setCurrentFile(index)
 
             const close = document.createElement("span")
             close.className = "tab-close"
@@ -358,6 +488,34 @@ document.addEventListener("DOMContentLoaded", () => {
                 persistFiles()
             }
 
+            tab.addEventListener('dragstart', e => {
+                dragSrcIndex = index
+                tab.classList.add('dragging')
+                e.dataTransfer.effectAllowed = 'move'
+            })
+            tab.addEventListener('dragend', () => {
+                tab.classList.remove('dragging')
+                tabBar.querySelectorAll('.tab').forEach(t => t.classList.remove('drag-over'))
+            })
+            tab.addEventListener('dragover', e => {
+                e.preventDefault()
+                e.dataTransfer.dropEffect = 'move'
+                tabBar.querySelectorAll('.tab').forEach(t => t.classList.remove('drag-over'))
+                if (dragSrcIndex !== index) tab.classList.add('drag-over')
+            })
+            tab.addEventListener('drop', e => {
+                e.preventDefault()
+                tab.classList.remove('drag-over')
+                if (dragSrcIndex === null || dragSrcIndex === index) return
+                const moved = openFiles.splice(dragSrcIndex, 1)[0]
+                const newIndex = dragSrcIndex < index ? index - 1 : index
+                openFiles.splice(newIndex, 0, moved)
+                currentIndex = newIndex
+                dragSrcIndex = null
+                persistFiles()
+                renderTabs()
+            })
+
             tab.addEventListener('contextmenu', e => {
                 if (!file.name.endsWith('.html')) return
                 showContextMenu(e, [
@@ -366,15 +524,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 ])
             })
 
-            tab.appendChild(label)
+            tab.appendChild(inner)
             tab.appendChild(close)
             tabBar.appendChild(tab)
         })
     }
 
+    function updateExplorerSub() {
+        const sub = document.getElementById('explorerSub')
+        if (!sub) return
+        const name = localStorage.getItem(ukey('slate_project_name')) || ''
+        let count = 0
+        function countFiles(nodes) { for (const n of nodes) { if (n.type === 'file') count++; else countFiles(n.children || []) } }
+        countFiles(tree)
+        sub.textContent = (name ? name + ' · ' : '') + count + ' file' + (count !== 1 ? 's' : '')
+    }
+
     function renderFileTree() {
         if (!fileTreeEl) return
         fileTreeEl.innerHTML = ""
+        updateExplorerSub()
         if (tree.length === 0) {
             const li = document.createElement("li")
             li.className = "muted"
@@ -658,6 +827,67 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function getFileIcon(name) {
+        const ext = name.split('.').pop().toLowerCase()
+        const map = {
+            js:       { label: 'JS',   bg: '#f7df1e', fg: '#1a1600' },
+            mjs:      { label: 'JS',   bg: '#f7df1e', fg: '#1a1600' },
+            cjs:      { label: 'JS',   bg: '#f7df1e', fg: '#1a1600' },
+            ts:       { label: 'TS',   bg: '#3178c6', fg: '#ffffff' },
+            jsx:      { label: 'JSX',  bg: '#61dafb', fg: '#0d1117' },
+            tsx:      { label: 'TSX',  bg: '#61dafb', fg: '#0d1117' },
+            html:     { label: 'HTM',  bg: '#e34c26', fg: '#ffffff' },
+            htm:      { label: 'HTM',  bg: '#e34c26', fg: '#ffffff' },
+            css:      { label: 'CSS',  bg: '#264de4', fg: '#ffffff' },
+            scss:     { label: 'SCss', bg: '#cd6799', fg: '#ffffff' },
+            less:     { label: 'LESS', bg: '#1d365d', fg: '#ffffff' },
+            json:     { label: '{ }',  bg: '#cbcb41', fg: '#1a1600' },
+            json5:    { label: '{ }',  bg: '#cbcb41', fg: '#1a1600' },
+            md:       { label: 'MD',   bg: '#519aba', fg: '#ffffff' },
+            mdx:      { label: 'MDX',  bg: '#519aba', fg: '#ffffff' },
+            txt:      { label: 'TXT',  bg: '#6b5f8a', fg: '#ffffff' },
+            png:      { label: 'PNG',  bg: '#a074c4', fg: '#ffffff' },
+            jpg:      { label: 'JPG',  bg: '#a074c4', fg: '#ffffff' },
+            jpeg:     { label: 'JPG',  bg: '#a074c4', fg: '#ffffff' },
+            gif:      { label: 'GIF',  bg: '#a074c4', fg: '#ffffff' },
+            svg:      { label: 'SVG',  bg: '#ffb13b', fg: '#1a0f00' },
+            webp:     { label: 'IMG',  bg: '#a074c4', fg: '#ffffff' },
+            ico:      { label: 'ICO',  bg: '#a074c4', fg: '#ffffff' },
+            py:       { label: 'PY',   bg: '#3572A5', fg: '#ffffff' },
+            go:       { label: 'GO',   bg: '#00add8', fg: '#ffffff' },
+            java:     { label: 'JV',   bg: '#b07219', fg: '#ffffff' },
+            php:      { label: 'PHP',  bg: '#777bb4', fg: '#ffffff' },
+            c:        { label: 'C',    bg: '#555a99', fg: '#ffffff' },
+            cpp:      { label: 'C++',  bg: '#f34b7d', fg: '#ffffff' },
+            cs:       { label: 'C#',   bg: '#178600', fg: '#ffffff' },
+            sh:       { label: 'SH',   bg: '#4eaa25', fg: '#ffffff' },
+            bash:     { label: 'SH',   bg: '#4eaa25', fg: '#ffffff' },
+            sql:      { label: 'SQL',  bg: '#e38c00', fg: '#ffffff' },
+            yaml:     { label: 'YML',  bg: '#cc3e44', fg: '#ffffff' },
+            yml:      { label: 'YML',  bg: '#cc3e44', fg: '#ffffff' },
+            xml:      { label: 'XML',  bg: '#e37933', fg: '#ffffff' },
+            toml:     { label: 'TOML', bg: '#9c4221', fg: '#ffffff' },
+            env:      { label: 'ENV',  bg: '#cbcb41', fg: '#1a1600' },
+            gitignore:{ label: 'GIT',  bg: '#f14e32', fg: '#ffffff' },
+            lock:     { label: 'LCK',  bg: '#6b5f8a', fg: '#ffffff' },
+        }
+        return map[ext] || { label: ext.slice(0,3).toUpperCase() || '?', bg: '#3d3558', fg: '#c4b8e0' }
+    }
+
+    function makeFileIconSvg(name) {
+        const { label, bg, fg } = getFileIcon(name)
+        const fontSize = label.length >= 4 ? '5.5' : label.length === 3 ? '6' : '7'
+        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 14" width="20" height="14" style="flex-shrink:0;display:block;">'
+            + '<rect width="20" height="14" rx="3" fill="' + bg + '"/>'
+            + '<text x="10" y="10.5" text-anchor="middle" font-family="system-ui,sans-serif" font-size="' + fontSize + '" font-weight="700" fill="' + fg + '" letter-spacing="-0.3">' + label + '</text>'
+            + '</svg>'
+    }
+
+    function applyFileIcon(el, name) {
+        el.className = 'file-icon-badge'
+        el.innerHTML = makeFileIconSvg(name)
+    }
+
     function renderFileNode(node, container, path) {
         const li = document.createElement("li")
         const isActive = currentIndex !== null && openFiles[currentIndex]?.name === node.name
@@ -667,7 +897,7 @@ document.addEventListener("DOMContentLoaded", () => {
         li.draggable = true
 
         const icon = document.createElement("i")
-        icon.className = "codicon codicon-file"
+        applyFileIcon(icon, node.name)
         icon.style.marginRight = "6px"
         icon.style.fontSize = "13px"
         icon.style.opacity = "0.6"
@@ -733,10 +963,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function addRecent(name, type) {
-        const recents = JSON.parse(localStorage.getItem("slate_recents") || "[]").filter(r => r.name !== name)
-        recents.unshift({ name, type, time: Date.now() })
-        localStorage.setItem("slate_recents", JSON.stringify(recents.slice(0, 10)))
+    function addRecent(name) {
+        const recents = JSON.parse(localStorage.getItem(ukey('slate_recents')) || '[]').filter(r => r.name !== name)
+        recents.unshift({ name, time: Date.now() })
+        localStorage.setItem(ukey('slate_recents'), JSON.stringify(recents.slice(0, 8)))
+        localStorage.setItem(ukey('slate_project_name'), name)
     }
 
     const fileInput = document.createElement("input")
@@ -755,7 +986,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const reader = new FileReader()
             reader.onload = e => resolve(e.target.result)
             reader.onerror = reject
-            reader.readAsText(file)
+            if (/\.(png|jpg|jpeg|gif|webp|bmp|ico)$/i.test(file.name)) {
+                reader.readAsDataURL(file)
+            } else {
+                reader.readAsText(file)
+            }
         })
     }
 
@@ -773,7 +1008,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         persistTree()
                     }
                     openFiles.push({ name: file.name, content, handle, unsaved: false })
-                    addRecent(file.name, "file")
+                    addRecent(file.name)
                     persistFiles()
                     await ensureWritePermission(handle)
                     setCurrentFile(openFiles.length - 1)
@@ -793,7 +1028,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         persistTree()
                     }
                     openFiles.push({ name: file.name, content, handle: null, unsaved: false })
-                    addRecent(file.name, "file")
+                    addRecent(file.name)
                     persistFiles()
                     setCurrentFile(openFiles.length - 1)
                 }
@@ -808,7 +1043,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 try {
                     const dirHandle = await window.showDirectoryPicker()
                     currentDirHandle = dirHandle
-                    addRecent(dirHandle.name, "folder")
                     openFiles = []
                     tree = []
                     if (window.monacoEditor) {
@@ -832,6 +1066,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     tree.push(folder)
                     persistTree()
                     persistFiles()
+                    addRecent(dirHandle.name)
                     if (openFiles.length > 0) setCurrentFile(0)
                 } catch (e) {
                     if (e.name !== "AbortError") console.error(e)
@@ -856,10 +1091,10 @@ document.addEventListener("DOMContentLoaded", () => {
                         folder.children.push({ type: "file", name: file.name, content })
                         openFiles.push({ name: file.name, content, handle: null, unsaved: false })
                     }
-                    addRecent(folderName, "folder")
                     tree.push(folder)
                     persistTree()
                     persistFiles()
+                    addRecent(folderName)
                     if (openFiles.length > 0) setCurrentFile(0)
                 }
                 folderInput.click()
@@ -894,6 +1129,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error(e)
             }
         } else {
+
             file.unsaved = false
             persistFiles()
             renderTabs()
@@ -932,8 +1168,373 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     })
 
+    const editorSettings = {
+        theme:                  localStorage.getItem(ukey('slate_theme'))                   || localStorage.getItem('slate_theme') || 'dark',
+        fontSize:               parseInt(localStorage.getItem(ukey('slate_fontSize')))      || 14,
+        tabSize:                parseInt(localStorage.getItem(ukey('slate_tabSize')))       || 4,
+        wordWrap:               localStorage.getItem(ukey('slate_wordWrap'))                || 'off',
+        lineNumbers:            localStorage.getItem(ukey('slate_lineNumbers'))             || 'on',
+        cursorStyle:            localStorage.getItem(ukey('slate_cursorStyle'))             || 'line',
+        cursorBlinking:         localStorage.getItem(ukey('slate_cursorBlinking'))          || 'blink',
+        renderWhitespace:       localStorage.getItem(ukey('slate_renderWhitespace'))        || 'none',
+        bracketPairColorization: localStorage.getItem(ukey('slate_bracketPairColorization')) !== 'false',
+        smoothScrolling:        localStorage.getItem(ukey('slate_smoothScrolling'))         === 'true',
+    }
+
+    function applySettings() {
+        document.body.setAttribute('data-theme', editorSettings.theme)
+        localStorage.setItem(ukey('slate_theme'), editorSettings.theme)
+        if (window.setEditorTheme) window.setEditorTheme(editorSettings.theme)
+        if (window.monacoEditor) {
+            window.monacoEditor.updateOptions({
+                fontSize:         editorSettings.fontSize,
+                tabSize:          editorSettings.tabSize,
+                wordWrap:         editorSettings.wordWrap,
+                lineNumbers:      editorSettings.lineNumbers,
+                cursorStyle:      editorSettings.cursorStyle,
+                cursorBlinking:   editorSettings.cursorBlinking,
+                renderWhitespace: editorSettings.renderWhitespace,
+                smoothScrolling:  editorSettings.smoothScrolling,
+                'bracketPairColorization.enabled': editorSettings.bracketPairColorization,
+            })
+        }
+        document.querySelectorAll('.setting-select[data-setting]').forEach(sel => {
+            const key = sel.dataset.setting
+            if (editorSettings[key] !== undefined) sel.value = String(editorSettings[key])
+        })
+        document.querySelectorAll('.setting-toggle input[data-setting]').forEach(chk => {
+            const key = chk.dataset.setting
+            if (editorSettings[key] !== undefined) chk.checked = editorSettings[key] === true || editorSettings[key] === 'on' || editorSettings[key] === 'true'
+        })
+    }
+
+    document.querySelectorAll('.setting-select[data-setting]').forEach(sel => {
+        sel.addEventListener('change', () => {
+            const key = sel.dataset.setting
+            const val = sel.value
+            editorSettings[key] = (key === 'fontSize' || key === 'tabSize') ? parseInt(val) : val
+            localStorage.setItem(ukey('slate_' + key), val)
+            applySettings()
+        })
+    })
+
+    document.querySelectorAll('.setting-toggle input[data-setting]').forEach(chk => {
+        chk.addEventListener('change', () => {
+            const key = chk.dataset.setting
+            const val = chk.checked ? (chk.dataset.on || 'true') : (chk.dataset.off || 'false')
+            editorSettings[key] = chk.checked
+            localStorage.setItem(ukey('slate_' + key), val)
+            applySettings()
+        })
+    })
+
+    applySettings()
+    window.editorReady && window.editorReady.then(() => applySettings())
+
+    const searchInput   = document.getElementById('searchInput')
+    const replaceInput  = document.getElementById('replaceInput')
+    const searchMeta    = document.getElementById('searchMeta')
+    const searchResults = document.getElementById('searchResults')
+    const btnCase       = document.getElementById('searchCaseSensitive')
+    const btnWord       = document.getElementById('searchWholeWord')
+    const btnRegex      = document.getElementById('searchRegex')
+    const btnReplaceOne = document.getElementById('replaceOne')
+    const btnReplaceAll = document.getElementById('replaceAll')
+
+    let searchOpts = { caseSensitive: false, wholeWord: false, useRegex: false }
+
+    function toggleSearchOpt(btn, key) {
+        searchOpts[key] = !searchOpts[key]
+        btn.classList.toggle('active', searchOpts[key])
+        runSearch()
+    }
+    if (btnCase)  btnCase.onclick  = () => toggleSearchOpt(btnCase,  'caseSensitive')
+    if (btnWord)  btnWord.onclick  = () => toggleSearchOpt(btnWord,  'wholeWord')
+    if (btnRegex) btnRegex.onclick = () => toggleSearchOpt(btnRegex, 'useRegex')
+
+    function buildRegex(query) {
+        if (!query) return null
+        try {
+            let pattern = searchOpts.useRegex ? query : query.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')
+            if (searchOpts.wholeWord) pattern = '\b' + pattern + '\b'
+            return new RegExp(pattern, searchOpts.caseSensitive ? 'g' : 'gi')
+        } catch { return null }
+    }
+
+    function getAllFileContents() {
+        const files = []
+        function walk(nodes) {
+            for (const n of nodes) {
+                if (n.type === 'file') files.push({ name: n.name, content: n.content || '' })
+                else if (n.type === 'folder') walk(n.children || [])
+            }
+        }
+        walk(tree)
+        return files
+    }
+
+    function runSearch() {
+        if (!searchResults) return
+        const query = searchInput ? searchInput.value : ''
+        searchResults.innerHTML = ''
+        if (searchMeta) searchMeta.textContent = ''
+        if (!query) return
+        const regex = buildRegex(query)
+        if (!regex) { if (searchMeta) searchMeta.textContent = 'Invalid regex'; return }
+
+        const files = getAllFileContents()
+        let totalMatches = 0
+
+        for (const file of files) {
+            const lines = file.content.split('\n')
+            const fileMatches = []
+            lines.forEach((line, i) => {
+                regex.lastIndex = 0
+                let m
+                while ((m = regex.exec(line)) !== null) {
+                    fileMatches.push({ line: i + 1, col: m.index, text: line, match: m[0] })
+                    if (!regex.global) break
+                }
+            })
+            if (!fileMatches.length) continue
+            totalMatches += fileMatches.length
+
+            const group = document.createElement('div')
+            group.className = 'search-file-group'
+
+            const header = document.createElement('div')
+            header.className = 'search-file-header'
+            const icon = document.createElement('i')
+            applyFileIcon(icon, file.name)
+            icon.style.marginRight = '5px'
+            header.appendChild(icon)
+            header.appendChild(document.createTextNode(file.name))
+            const badge = document.createElement('span')
+            badge.className = 'search-file-count'
+            badge.textContent = fileMatches.length
+            header.appendChild(badge)
+            group.appendChild(header)
+
+            fileMatches.slice(0, 50).forEach(hit => {
+                const row = document.createElement('div')
+                row.className = 'search-match'
+                const lineNum = document.createElement('span')
+                lineNum.className = 'search-line-num'
+                lineNum.textContent = hit.line
+                row.appendChild(lineNum)
+                const text = document.createElement('span')
+                const safe = hit.text.trim().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+                const safeQ = query.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&')
+                text.innerHTML = safe.replace(new RegExp(safeQ, searchOpts.caseSensitive ? 'g' : 'gi'), function(s) { return '<span class="search-match-hl">' + s + '</span>' })
+                row.appendChild(text)
+                row.onclick = () => {
+                    openFileInEditor(file.name, file.content)
+                    setTimeout(() => {
+                        if (window.monacoEditor) {
+                            window.monacoEditor.revealLineInCenter(hit.line)
+                            window.monacoEditor.setPosition({ lineNumber: hit.line, column: hit.col + 1 })
+                            window.monacoEditor.focus()
+                        }
+                    }, 80)
+                }
+                group.appendChild(row)
+            })
+            searchResults.appendChild(group)
+        }
+
+        if (searchMeta) searchMeta.textContent = totalMatches
+            ? totalMatches + ' result' + (totalMatches !== 1 ? 's' : '') + ' in ' + searchResults.children.length + ' file' + (searchResults.children.length !== 1 ? 's' : '')
+            : 'No results'
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', runSearch)
+        searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') runSearch() })
+    }
+
+    if (btnReplaceOne) btnReplaceOne.onclick = () => {
+        const query = searchInput ? searchInput.value : ''
+        const replacement = replaceInput ? replaceInput.value : ''
+        if (!query || currentIndex === null) return
+        const ed = window.monacoEditor
+        if (!ed) return
+        const regex = buildRegex(query)
+        if (!regex) return
+        const val = ed.getValue()
+        regex.lastIndex = 0
+        const newVal = val.replace(regex, replacement)
+        if (newVal !== val) {
+            suppressChange = true
+            ed.setValue(newVal)
+            suppressChange = false
+            openFiles[currentIndex].content = newVal
+            persistFiles()
+        }
+        runSearch()
+    }
+
+    if (btnReplaceAll) btnReplaceAll.onclick = () => {
+        const query = searchInput ? searchInput.value : ''
+        const replacement = replaceInput ? replaceInput.value : ''
+        if (!query) return
+        const regex = buildRegex(query)
+        if (!regex) return
+        let changed = 0
+        for (const file of openFiles) {
+            const newContent = file.content.replace(regex, replacement)
+            if (newContent !== file.content) { file.content = newContent; changed++ }
+            const node = findTreeNodeByName(tree, file.name)
+            if (node) node.content = newContent
+        }
+        persistFiles()
+        persistTree()
+        if (window.monacoEditor && currentIndex !== null) {
+            suppressChange = true
+            window.monacoEditor.setValue(openFiles[currentIndex].content)
+            suppressChange = false
+        }
+        runSearch()
+        if (searchMeta) searchMeta.textContent += ' — replaced in ' + changed + ' file' + (changed !== 1 ? 's' : '')
+    }
+
+    document.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'F') {
+            e.preventDefault()
+            setSidebarView('search')
+            setTimeout(() => searchInput && searchInput.focus(), 50)
+        }
+    })
+
+    function isImageFile(name) {
+        return /\.(png|jpg|jpeg|gif|svg|webp|bmp|ico)$/i.test(name)
+    }
+
+    const imagePreviewPane = document.createElement('div')
+    imagePreviewPane.className = 'image-preview-pane'
+    imagePreviewPane.style.display = 'none'
+    const imgEl = document.createElement('img')
+    const imgInfo = document.createElement('div')
+    imgInfo.className = 'image-preview-info'
+    imagePreviewPane.appendChild(imgEl)
+    imagePreviewPane.appendChild(imgInfo)
+    const editorPaneEl = document.getElementById('editor-pane')
+    if (editorPaneEl) editorPaneEl.appendChild(imagePreviewPane)
+
+    function showImagePreview(name, content) {
+        const container = document.getElementById('editor-container')
+        const placeholder = document.getElementById('editor-placeholder')
+        if (container)   container.style.display   = 'none'
+        if (placeholder) placeholder.style.display = 'none'
+        imagePreviewPane.style.display = 'flex'
+        if (content && content.startsWith('data:')) {
+            imgEl.src = content
+            imgEl.onload = () => { imgInfo.textContent = name + ' — ' + imgEl.naturalWidth + ' × ' + imgEl.naturalHeight + 'px' }
+        } else if (name.endsWith('.svg') && content) {
+            const blob = new Blob([content], { type: 'image/svg+xml' })
+            imgEl.src = URL.createObjectURL(blob)
+            imgEl.onload = () => { imgInfo.textContent = name + ' — ' + imgEl.naturalWidth + ' × ' + imgEl.naturalHeight + 'px' }
+        } else {
+            imgEl.src = ''
+            imgInfo.textContent = name + ' — open from disk to preview'
+        }
+    }
+
+    function hideImagePreview() {
+        imagePreviewPane.style.display = 'none'
+    }
+
+    let _profileTimer = null
+
+    function _getProfileEls() {
+        return {
+            btn:     document.getElementById('profileBtn'),
+            popover: document.getElementById('profilePopover'),
+            avatar:  document.getElementById('activityAvatar'),
+            pAvatar: document.getElementById('popoverAvatar'),
+            pName:   document.getElementById('popoverName'),
+            pEmail:  document.getElementById('popoverEmail'),
+            pLogout: document.getElementById('popoverLogout'),
+            pSignIn: document.getElementById('popoverSignIn'),
+        }
+    }
+
+    function loadUserProfile() {
+        const { avatar, pAvatar, pName, pEmail, pLogout, pSignIn } = _getProfileEls()
+        const user  = localStorage.getItem('slate_user')
+        const email = localStorage.getItem('slate_email') || '—'
+        const init  = user ? user[0].toUpperCase() : '?'
+        if (avatar)  avatar.textContent  = init
+        if (pAvatar) pAvatar.textContent = init
+        if (pName)   pName.textContent   = user || 'Not signed in'
+        if (pEmail)  pEmail.textContent  = user ? email : '—'
+        if (pLogout) pLogout.style.display = user ? 'flex' : 'none'
+        if (pSignIn) pSignIn.style.display = user ? 'none' : 'flex'
+
+        const tasksEl  = document.getElementById('popoverTasks')
+        const totalEl  = document.getElementById('pptTotal')
+        const doneEl   = document.getElementById('pptDone')
+        const overdueEl= document.getElementById('pptOverdue')
+        if (tasksEl) tasksEl.style.display = user ? 'flex' : 'none'
+        if (user && totalEl && doneEl && overdueEl) {
+            const tasks = JSON.parse(localStorage.getItem(ukey('slate_tasks')) || '[]')
+            const today = new Date(); today.setHours(0,0,0,0)
+            let total = tasks.length, done = 0, overdue = 0
+            tasks.forEach(t => {
+                if (t.done) { done++ }
+                else if (t.date && new Date(t.date) < today) { overdue++ }
+            })
+            totalEl.textContent   = total
+            doneEl.textContent    = done
+            overdueEl.textContent = overdue
+        }
+    }
+
+    function _showPopover() {
+        clearTimeout(_profileTimer)
+        const { popover } = _getProfileEls()
+        if (!popover) return
+        loadUserProfile()
+        popover.style.display = 'flex'
+    }
+
+    function _hidePopover() {
+        clearTimeout(_profileTimer)
+        _profileTimer = setTimeout(() => {
+            const { popover } = _getProfileEls()
+            if (popover) popover.style.display = 'none'
+        }, 180)
+    }
+
+    setTimeout(() => {
+        const { btn, popover, pLogout } = _getProfileEls()
+        if (btn) {
+            btn.addEventListener('mouseenter', _showPopover)
+            btn.addEventListener('mouseleave', _hidePopover)
+        }
+        if (popover) {
+            popover.addEventListener('mouseenter', () => clearTimeout(_profileTimer))
+            popover.addEventListener('mouseleave', _hidePopover)
+            popover.style.display = 'none'
+        }
+        const { pSignIn: signInBtn } = _getProfileEls()
+        if (signInBtn) {
+            signInBtn.onclick = () => { location.href = 'home.html' }
+        }
+        if (pLogout) {
+            pLogout.onclick = () => {
+                localStorage.removeItem('slate_user')
+                localStorage.removeItem('slate_email')
+                localStorage.removeItem('slate_project_name')
+                loadUserProfile()
+                const { popover: p } = _getProfileEls()
+                if (p) p.style.display = 'none'
+                location.href = 'home.html'
+            }
+        }
+        loadUserProfile()
+    }, 0)
+
     renderFileTree()
     renderTabs()
-
 
 })
