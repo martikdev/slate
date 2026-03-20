@@ -13,24 +13,35 @@
 
     <div class="sidebar">
         <div class="activity-bar">
-            <div class="activity-icon" data-view="tasks">
-                <i class="codicon codicon-checklist"></i>
+            <div class="activity-logo" onclick="location.href='home.html'" title="Home" style="cursor:pointer;">S</div>
+            <div class="activity-nav">
+                <div class="activity-icon active" data-view="explorer" title="Explorer">
+                    <i class="codicon codicon-files"></i>
+                </div>
+                <div class="activity-icon" data-view="search" title="Search">
+                    <i class="codicon codicon-search"></i>
+                </div>
+                <div class="activity-icon" data-view="tasks" title="Tasks">
+                    <i class="codicon codicon-checklist"></i>
+                </div>
+                <div class="activity-icon" data-view="settings" title="Settings">
+                    <i class="codicon codicon-settings-gear"></i>
+                </div>
             </div>
-            <div class="activity-icon active" data-view="explorer">
-                <i class="codicon codicon-files"></i>
-            </div>
-            <div class="activity-icon" data-view="search">
-                <i class="codicon codicon-search"></i>
-            </div>
-            <div class="activity-icon" data-view="settings">
-                <i class="codicon codicon-settings-gear"></i>
+            <div class="activity-spacer"></div>
+            <div class="activity-profile" id="profileBtn">
+                <div class="activity-avatar" id="activityAvatar">?</div>
             </div>
         </div>
 
         <div class="sidebar-panel" data-view="tasks" style="display:none;">
-            <div class="sidebar-header">Tasks</div>
-            <div class="sidebar-actions">
-                <button id="addTaskBtn">Add Task</button>
+            <div class="sidebar-header"><div class="sidebar-header-title">Tasks</div></div>
+            <div class="tasks-filter-row">
+                <button class="tasks-filter-btn active" data-filter="all">All</button>
+                <button class="tasks-filter-btn" data-filter="open">Open</button>
+                <button class="tasks-filter-btn" data-filter="done">Done</button>
+                <button class="tasks-filter-btn" data-filter="overdue">Overdue</button>
+                <button id="addTaskBtn" title="New Task" class="tasks-add-btn"><i class="codicon codicon-add"></i></button>
             </div>
             <div class="sidebar-content">
                 <ul id="tasksList" class="task-list"></ul>
@@ -38,12 +49,15 @@
         </div>
 
         <div class="sidebar-panel" data-view="explorer">
-            <div class="sidebar-header">Explorer</div>
-            <div class="sidebar-actions">
-                <button id="newFileBtn" title="New File"><i class="codicon codicon-new-file"></i></button>
-                <button id="newFolderBtn" title="New Folder"><i class="codicon codicon-new-folder"></i></button>
-                <button id="openFileBtn" title="Open File"><i class="codicon codicon-go-to-file"></i></button>
-                <button id="openFolderBtn" title="Open Folder"><i class="codicon codicon-folder-opened"></i></button>
+            <div class="sidebar-header">
+                <div class="sidebar-header-title">Explorer</div>
+                <div class="sidebar-header-sub" id="explorerSub">— files</div>
+                <div class="sidebar-actions">
+                    <button id="newFileBtn" title="New File"><i class="codicon codicon-new-file"></i></button>
+                    <button id="newFolderBtn" title="New Folder"><i class="codicon codicon-new-folder"></i></button>
+                    <button id="openFileBtn" title="Open File"><i class="codicon codicon-go-to-file"></i></button>
+                    <button id="openFolderBtn" title="Open Folder"><i class="codicon codicon-folder-opened"></i></button>
+                </div>
             </div>
             <div class="sidebar-content">
                 <ul id="fileTree" class="file-tree"></ul>
@@ -51,38 +65,152 @@
         </div>
 
         <div class="sidebar-panel" data-view="search" style="display:none;">
-            <div class="sidebar-header">Search</div>
-            <div class="sidebar-content">
-                <p class="muted">Search coming later</p>
+            <div class="sidebar-header"><div class="sidebar-header-title">Search</div></div>
+            <div class="sidebar-content search-content">
+                <div class="search-box-wrap">
+                    <div class="search-input-row">
+                        <input id="searchInput" class="search-input" placeholder="Search" type="text" spellcheck="false">
+                        <button id="searchCaseSensitive" class="search-opt-btn" title="Match Case">Aa</button>
+                        <button id="searchWholeWord" class="search-opt-btn" title="Whole Word">W</button>
+                        <button id="searchRegex" class="search-opt-btn" title="Use Regex">.*</button>
+                    </div>
+                    <div class="search-input-row">
+                        <input id="replaceInput" class="search-input" placeholder="Replace" type="text" spellcheck="false">
+                        <button id="replaceOne" class="search-opt-btn" title="Replace">⇄</button>
+                        <button id="replaceAll" class="search-opt-btn" title="Replace All">⇉</button>
+                    </div>
+                </div>
+                <div class="search-meta" id="searchMeta"></div>
+                <div id="searchResults" class="search-results"></div>
             </div>
         </div>
 
         <div class="sidebar-panel" data-view="settings" style="display:none;">
-            <div class="sidebar-header">Settings</div>
-            <div class="sidebar-content">
-                <p class="muted">Settings coming later</p>
+            <div class="sidebar-header"><div class="sidebar-header-title">Settings</div></div>
+            <div class="sidebar-content settings-content">
+
+                <div class="settings-group">
+                    <div class="settings-group-label">Appearance</div>
+                    <div class="setting-item">
+                        <span class="setting-name">Theme</span>
+                        <select class="setting-select" data-setting="theme">
+                            <option value="dark">Dark</option>
+                            <option value="light">Light</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-name">Font Size</span>
+                        <select class="setting-select" data-setting="fontSize">
+                            <option value="12">12px</option>
+                            <option value="13">13px</option>
+                            <option value="14">14px</option>
+                            <option value="15">15px</option>
+                            <option value="16">16px</option>
+                            <option value="18">18px</option>
+                            <option value="20">20px</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-name">Cursor Style</span>
+                        <select class="setting-select" data-setting="cursorStyle">
+                            <option value="line">Line</option>
+                            <option value="block">Block</option>
+                            <option value="underline">Underline</option>
+                            <option value="line-thin">Thin Line</option>
+                            <option value="block-outline">Block Outline</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-name">Cursor Blinking</span>
+                        <select class="setting-select" data-setting="cursorBlinking">
+                            <option value="blink">Blink</option>
+                            <option value="smooth">Smooth</option>
+                            <option value="phase">Phase</option>
+                            <option value="expand">Expand</option>
+                            <option value="solid">Solid</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <div class="settings-group-label">Editor</div>
+                    <div class="setting-item">
+                        <span class="setting-name">Tab Size</span>
+                        <select class="setting-select setting-select-sm" data-setting="tabSize">
+                            <option value="2">2</option>
+                            <option value="4">4</option>
+                            <option value="8">8</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-name">Line Numbers</span>
+                        <select class="setting-select" data-setting="lineNumbers">
+                            <option value="on">On</option>
+                            <option value="off">Off</option>
+                            <option value="relative">Relative</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-name">Whitespace</span>
+                        <select class="setting-select" data-setting="renderWhitespace">
+                            <option value="none">None</option>
+                            <option value="boundary">Boundary</option>
+                            <option value="selection">Selection</option>
+                            <option value="all">All</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-name">Word Wrap</span>
+                        <label class="setting-toggle">
+                            <input type="checkbox" data-setting="wordWrap" data-on="on" data-off="off">
+                            <span class="setting-toggle-track"><span class="setting-toggle-thumb"></span></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-name">Smooth Scrolling</span>
+                        <label class="setting-toggle">
+                            <input type="checkbox" data-setting="smoothScrolling" data-on="true" data-off="false">
+                            <span class="setting-toggle-track"><span class="setting-toggle-thumb"></span></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-name">Bracket Colors</span>
+                        <label class="setting-toggle">
+                            <input type="checkbox" data-setting="bracketPairColorization" data-on="true" data-off="false" checked>
+                            <span class="setting-toggle-track"><span class="setting-toggle-thumb"></span></span>
+                        </label>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
     <div class="main">
-        <div id="tabBar" class="tab-bar">
-            <button id="previewToggle" title="Toggle Preview (Alt+P)" class="preview-toggle-btn"><i class="codicon codicon-open-preview"></i><span class="preview-toggle-label">Preview</span></button>
-        </div>
+        <div id="tabBar" class="tab-bar"></div>
         <div id="editor-preview-split" class="editor-preview-split">
             <div id="editor-pane" class="editor-pane">
                 <div id="editor-container"></div>
                 <div id="editor-placeholder" class="editor-placeholder">
-                    <span>Open or create a file to start editing</span>
+                    <div class="editor-placeholder-logo">S</div>
+                    <div class="editor-placeholder-text">Open or create a file to start editing</div>
+                    <div class="editor-placeholder-hints">
+                        <div class="editor-placeholder-hint"><kbd>Ctrl</kbd><kbd>N</kbd> new file</div>
+                        <div class="editor-placeholder-hint"><kbd>Ctrl</kbd><kbd>O</kbd> open file</div>
+                        <div class="editor-placeholder-hint"><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>F</kbd> search</div>
+                    </div>
                 </div>
             </div>
             <div id="preview-resizer" class="preview-resizer" style="display:none"></div>
             <div id="preview-pane" class="preview-pane" style="display:none">
                 <div class="preview-topbar">
-                    <span class="preview-title"><i class="codicon codicon-open-preview"></i> Preview</span>
-<div class="preview-topbar-actions">
-                        <button id="previewConsoleToggle" class="preview-topbar-btn" title="Toggle Console"><i class="codicon codicon-terminal"></i></button>
+                    <div class="preview-url-bar">
+                        <span class="preview-url-slash">/</span>
+                        <input id="previewUrlInput" class="preview-url-input" type="text" spellcheck="false" placeholder="index.html">
+                        <button id="previewUrlGo" class="preview-url-go" title="Navigate"><i class="codicon codicon-arrow-right"></i></button>
                         <button id="previewRefresh" class="preview-topbar-btn" title="Refresh"><i class="codicon codicon-refresh"></i></button>
+                    </div>
+                    <div class="preview-topbar-actions">
                         <button id="previewNewTab" class="preview-topbar-btn" title="Open in new tab"><i class="codicon codicon-link-external"></i></button>
                         <button id="previewClose" class="preview-topbar-btn" title="Close preview"><i class="codicon codicon-close"></i></button>
                     </div>
@@ -94,42 +222,42 @@
                     <i class="codicon codicon-eye-closed" style="font-size:32px;margin-bottom:8px;opacity:0.4"></i>
                     <span>Preview only available for HTML files</span>
                 </div>
-                <div id="preview-console" class="preview-console" style="display:none">
-                    <div class="preview-console-toolbar">
-                        <span class="preview-console-title">Console</span>
-                        <button id="previewConsoleClear" class="preview-topbar-btn" title="Clear"><i class="codicon codicon-clear-all"></i></button>
-                    </div>
-                    <div id="preview-console-output" class="preview-console-output"></div>
-                </div>
+
             </div>
         </div>
     </div>
 
 </div>
 
-
 <div class="task-modal" id="taskModal">
     <div class="task-modal-content">
-        <h3>New Task</h3>
-        <label>
-            Title
-            <input type="text" id="taskTitle" placeholder="Task title">
-        </label>
-        <label>
-            Description
-            <textarea id="taskDesc" rows="3" placeholder="Optional description"></textarea>
-        </label>
-        <label>
-            Due Date
-            <input type="date" id="taskDate">
-        </label>
-        <label>
-            Color
-            <input type="color" id="taskColor" value="#22c55e">
-        </label>
-        <div class="task-modal-buttons">
-            <button id="taskCancelBtn">Cancel</button>
-            <button id="taskSubmitBtn">Add Task</button>
+        <div class="task-modal-header">
+            <div class="task-modal-title" id="taskModalTitle">New Task</div>
+            <button class="task-modal-close" id="taskCancelBtn"><i class="codicon codicon-close"></i></button>
+        </div>
+        <div class="task-modal-body">
+            <div class="task-modal-field">
+                <div class="task-modal-label">Title</div>
+                <input type="text" id="taskTitle" placeholder="What needs to be done?">
+            </div>
+            <div class="task-modal-field">
+                <div class="task-modal-label">Description</div>
+                <textarea id="taskDesc" rows="3" placeholder="Add some details..."></textarea>
+            </div>
+            <div class="task-modal-row">
+                <div class="task-modal-field">
+                    <div class="task-modal-label">Due Date</div>
+                    <input type="date" id="taskDate">
+                </div>
+                <div class="task-modal-field task-modal-field-color">
+                    <div class="task-modal-label">Color</div>
+                    <input type="color" id="taskColor" value="#a78bfa">
+                </div>
+            </div>
+        </div>
+        <div class="task-modal-footer">
+            <button id="taskCancelFooterBtn" class="task-modal-cancel">Cancel</button>
+            <button id="taskSubmitBtn" class="task-modal-submit">Add Task</button>
         </div>
     </div>
 </div>
@@ -145,5 +273,52 @@
 <script src="editor.js"></script>
 <script src="sidebar.js"></script>
 <script src="preview.js"></script>
+<div class="profile-popover" id="profilePopover">
+    <div class="profile-popover-top">
+        <div class="profile-popover-avatar" id="popoverAvatar">?</div>
+        <div class="profile-popover-info">
+            <div class="profile-popover-name" id="popoverName">Not signed in</div>
+            <div class="profile-popover-email" id="popoverEmail">—</div>
+        </div>
+    </div>
+    <div class="profile-popover-tasks" id="popoverTasks">
+        <div class="profile-popover-task-stat">
+            <div class="ppt-num" id="pptTotal">0</div>
+            <div class="ppt-label">Total</div>
+        </div>
+        <div class="ppt-divider"></div>
+        <div class="profile-popover-task-stat">
+            <div class="ppt-num done" id="pptDone">0</div>
+            <div class="ppt-label">Done</div>
+        </div>
+        <div class="ppt-divider"></div>
+        <div class="profile-popover-task-stat">
+            <div class="ppt-num overdue" id="pptOverdue">0</div>
+            <div class="ppt-label">Overdue</div>
+        </div>
+    </div>
+    <div class="profile-popover-stats" id="popoverStats" style="display:none;">
+        <div class="profile-popover-stat">
+            <span class="profile-popover-stat-num" id="popoverStatTotal">0</span>
+            <span class="profile-popover-stat-label">tasks</span>
+        </div>
+        <div class="profile-popover-stat">
+            <span class="profile-popover-stat-num" id="popoverStatDone">0</span>
+            <span class="profile-popover-stat-label">done</span>
+        </div>
+        <div class="profile-popover-stat">
+            <span class="profile-popover-stat-num popover-overdue" id="popoverStatOverdue">0</span>
+            <span class="profile-popover-stat-label">overdue</span>
+        </div>
+    </div>
+    <div class="profile-popover-actions">
+        <div class="profile-popover-action danger" id="popoverLogout" style="display:none;">
+            <i class="codicon codicon-sign-out"></i> Sign out
+        </div>
+        <div class="profile-popover-action" id="popoverSignIn">
+            <i class="codicon codicon-account"></i> Sign in
+        </div>
+    </div>
+</div>
 </body>
 </html>
