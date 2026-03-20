@@ -2,15 +2,11 @@
 
 Slate, a vscode like code editor with a live preview, a terminal, and more features.
 
-## Possible future improvements to the current sidebar
-
-* settings in the sidebar
-* profile page & in the sidebar
-* search in the sidebar
-
 ## Future improvements
 
 * GitHub linking instead of opening a folder
+* changing icons of the files (like Python icon or HTML icon)
+* add a profile page
 
 ## Preview & Links
 
