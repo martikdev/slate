@@ -17,11 +17,7 @@ body {
     overflow: hidden;
 }
 
-.app {
-    display: flex;
-    height: 100vh;
-    width: 100vw;
-}
+.app { display: flex; height: 100vh; width: 100vw; }
 
 .home-main {
     flex: 1;
@@ -32,125 +28,203 @@ body {
 }
 
 .topbar {
-    height: 52px;
-    background: #13111a;
+    height: 40px;
+    background: #18161f;
     border-bottom: 1px solid #2d2840;
     display: flex;
     align-items: center;
-    padding: 0 24px;
+    padding: 0 20px;
     flex-shrink: 0;
-    width: 100%;
+    justify-content: space-between;
 }
 
-.topbar-logo {
-    font-size: 18px;
-    font-weight: 800;
-    color: #e2d9f3;
-    letter-spacing: -0.03em;
-    flex: 1;
-}
+.topbar-logo { font-size: 15px; font-weight: 700; color: #e8e0f8; letter-spacing: -0.02em; }
 
-.topbar-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.topbar-time { font-size: 11px; color: #4a4060; font-variant-numeric: tabular-nums; }
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
 
 .btn-login {
     background: none;
     border: 1px solid #2d2840;
     color: #7a6e9a;
-    font-size: 13px;
+    font-size: 12px;
     font-family: inherit;
-    padding: 7px 16px;
-    border-radius: 8px;
+    padding: 5px 12px;
+    border-radius: 7px;
     cursor: pointer;
     transition: background 0.15s, color 0.15s, border-color 0.15s;
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 6px;
 }
-
-.btn-login:hover {
-    background: rgba(167,139,250,0.08);
-    color: #e2d9f3;
-    border-color: rgba(167,139,250,0.3);
-}
-
-.btn-login i { font-size: 15px; }
+.btn-login:hover { background: rgba(167,139,250,0.08); color: #e2d9f3; border-color: rgba(167,139,250,0.3); }
+.btn-login i { font-size: 14px; }
 
 .content {
     flex: 1;
-    display: flex;
-    align-items: flex-start;
-    padding: 80px 96px;
     overflow-y: auto;
+    padding: 48px 64px;
 }
 
-.home-body {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    max-width: 480px;
-}
+.home-hero { margin-bottom: 40px; }
 
-.home-title {
-    font-size: 30px;
-    font-weight: 700;
-    color: #e2d9f3;
-    letter-spacing: -0.02em;
+.home-greeting {
+    font-size: 28px;
+    font-weight: 800;
+    color: #e8e0f8;
+    letter-spacing: -0.03em;
     line-height: 1.2;
+    margin-bottom: 6px;
 }
 
-.home-section { display: flex; flex-direction: column; gap: 10px; }
+.home-greeting-sub { font-size: 13px; color: #6b5f8a; }
+.home-greeting-sub span { color: #a78bfa; }
+.greeting-project { cursor: pointer; text-decoration: underline; text-decoration-color: rgba(167,139,250,0.4); text-underline-offset: 2px; }
+.greeting-project:hover { text-decoration-color: #a78bfa; }
+
+.home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.home-col { display: flex; flex-direction: column; gap: 20px; }
+.home-section { display: flex; flex-direction: column; gap: 6px; }
 
 .home-section-label {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
-    color: #6b5f8a;
+    color: #4a4060;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
 }
 
-.home-links { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.action-list { display: flex; flex-direction: column; gap: 2px; }
 
-.home-links li {
-    font-size: 14px;
-    color: #a78bfa;
-    padding: 6px 0;
-    cursor: pointer;
+.action-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    width: fit-content;
-    transition: color 0.12s;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.1s;
 }
+.action-item:hover { background: rgba(167,139,250,0.07); }
 
-.home-links li:hover { color: #e2d9f3; }
-
-.home-links li i { font-size: 15px; opacity: 0.7; }
-
-.home-links li.muted {
-    color: #3d3558;
-    cursor: default;
-    pointer-events: none;
-}
-
-.recent-item {
+.action-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    background: rgba(167,139,250,0.1);
     display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.recent-item-name {
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
     font-size: 14px;
     color: #a78bfa;
 }
 
-.recent-item-meta {
-    font-size: 11px;
-    color: #6b5f8a;
+.action-text { display: flex; flex-direction: column; gap: 1px; }
+.action-name { font-size: 13px; color: #c4b8e0; font-weight: 500; }
+.action-desc { font-size: 11px; color: #4a4060; }
+
+.recent-cards { display: flex; flex-direction: column; gap: 1px; }
+
+.recent-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.1s;
 }
+.recent-card:hover { background: rgba(167,139,250,0.07); }
+
+.rc-arrow { font-size: 22px; color: #3d3558; flex-shrink: 0; transition: color 0.1s; }
+.recent-card:hover .rc-arrow { color: #a78bfa; }
+
+.rc-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.rc-name { font-size: 13px; color: #c4b8e0; font-weight: 500; transition: color 0.1s; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.recent-card:hover .rc-name { color: #e8e0f8; }
+.rc-meta { font-size: 11px; color: #4a4060; display: flex; gap: 6px; }
+.rc-time { flex-shrink: 0; }
+
+.home-tasks-widget { background: #201d2b; border: 1px solid #2d2840; border-radius: 10px; overflow: hidden; }
+.htw-empty { padding: 14px 13px; font-size: 12px; color: #3d3558; }
+.htw-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 13px;
+    border-bottom: 1px solid rgba(45,40,64,0.5);
+    transition: background 0.1s;
+}
+.htw-row:last-child { border-bottom: none; }
+.htw-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.htw-name { font-size: 12px; color: #c4b8e0; flex: 1; }
+.htw-due { font-size: 11px; color: #4a4060; }
+.htw-due.overdue { color: #f87171; }
+.htw-actions { display: flex; align-items: center; gap: 3px; flex-shrink: 0; }
+.htw-btn { background: none; border: none; color: #4a4060; cursor: pointer; width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: background 0.1s, color 0.1s; flex-shrink: 0; }
+.htw-btn:hover { background: rgba(167,139,250,0.12); color: #a78bfa; }
+.htw-btn-delete:hover { background: rgba(248,113,113,0.1); color: #f87171; }
+.htw-row { cursor: pointer; }
+.htw-row:hover { background: rgba(167,139,250,0.05); }
+@keyframes taskHighlight { 0%,100%{background:transparent} 20%,80%{background:rgba(167,139,250,0.15)} }
+.task-highlight { animation: taskHighlight 1.8s ease; }
+.muted { color: #3d3558; font-size: 12px; }
+
+.task-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; }
+.task-modal-content { background: #201d2b; border: 1px solid #2d2840; border-radius: 14px; padding: 22px; width: 360px; display: flex; flex-direction: column; gap: 14px; }
+.task-modal-header { display: flex; align-items: center; justify-content: space-between; }
+.task-modal-title { font-size: 15px; font-weight: 600; color: #e8e0f8; }
+.task-modal-close { background: none; border: none; color: #6b5f8a; cursor: pointer; font-size: 18px; padding: 2px 4px; border-radius: 4px; line-height: 1; }
+.task-modal-close:hover { color: #e8e0f8; }
+.task-modal-body { display: flex; flex-direction: column; gap: 12px; }
+.task-modal-field { display: flex; flex-direction: column; gap: 5px; }
+.task-modal-label { font-size: 12px; color: #6b5f8a; }
+.task-modal-input, .task-modal-textarea { background: #18161f; border: 1px solid #2d2840; color: #c4b8e0; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-family: inherit; outline: none; color-scheme: dark; }
+.task-modal-input:focus, .task-modal-textarea:focus { border-color: #a78bfa; }
+.task-modal-textarea { resize: vertical; min-height: 60px; }
+.task-modal-row { display: flex; gap: 12px; }
+.task-modal-row .task-modal-field { flex: 1; }
+.task-modal-field-color input[type="color"] { width: 40px; height: 32px; border-radius: 6px; border: 1px solid #2d2840; background: none; cursor: pointer; padding: 2px; }
+.task-modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+.task-modal-cancel { background: none; border: 1px solid #2d2840; color: #6b5f8a; font-size: 13px; font-family: inherit; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+.task-modal-cancel:hover { background: rgba(167,139,250,0.08); color: #c4b8e0; }
+.task-modal-submit { background: #a78bfa; color: #13111a; font-size: 13px; font-family: inherit; font-weight: 600; padding: 8px 16px; border-radius: 8px; cursor: pointer; border: none; }
+.task-modal-submit:hover { opacity: 0.85; }
+
+.task-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.task-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 6px; border-radius: 8px; transition: background 0.1s; cursor: default; }
+.task-item:hover { background: rgba(167,139,250,0.06); }
+.task-item:hover .task-actions { opacity: 1; }
+.task-item:hover .task-preview { display: flex; }
+.task-done .task-title { text-decoration: line-through; color: #4a4060; }
+.task-done .task-color { opacity: 0.25; }
+.task-overdue .task-date { color: #f87171; }
+.task-overdue .task-color { background: #f87171 !important; --task-col: #f87171; }
+.task-color {
+    width: 3px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    align-self: stretch;
+    min-height: 20px;
+}
+.task-info { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.task-title { font-size: 13px; color: #c4b8e0; }
+.task-preview { display: none; flex-direction: column; gap: 2px; }
+.task-desc, .task-date { font-size: 11px; color: #6b5f8a; }
+.task-actions { display: flex; gap: 2px; opacity: 0; transition: opacity 0.1s; flex-shrink: 0; }
+.task-btn { background: none; border: none; cursor: pointer; color: #6b5f8a; width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: background 0.1s, color 0.1s; }
+.task-btn:hover { background: rgba(167,139,250,0.12); color: #e2d9f3; }
+.task-btn-delete:hover { background: rgba(248,113,113,0.12); color: #f87171; }
+
+.tasks-filter-row { display: flex; align-items: center; gap: 2px; padding: 8px 10px; border-bottom: 1px solid #2d2840; flex-shrink: 0; }
+.tasks-filter-btn { background: none; border: none; color: #6b5f8a; font-size: 11px; font-family: inherit; padding: 3px 8px; border-radius: 4px; cursor: pointer; transition: background 0.1s, color 0.1s; }
+.tasks-filter-btn.active { background: rgba(167,139,250,0.15); color: #a78bfa; }
+.tasks-filter-btn:hover:not(.active) { background: #13111a; color: #c4b8e0; }
+.tasks-add-btn { background: none; border: none; color: #6b5f8a; cursor: pointer; width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 15px; margin-left: auto; transition: background 0.1s, color 0.1s; }
+.tasks-add-btn:hover { background: rgba(167,139,250,0.12); color: #a78bfa; }
 
 /* terminal login */
 .modal-overlay {
@@ -163,101 +237,35 @@ body {
     z-index: 100;
     font-family: 'Menlo', 'Consolas', 'Monaco', monospace;
 }
-
 .modal-overlay.open { display: flex; }
-
-.terminal {
-    width: 520px;
-    background: #0d0b12;
-    border-radius: 3px;
-    border: 1px solid #2d2840;
-    overflow: hidden;
-}
-
-.term-titlebar {
-    height: 26px;
-    background: #1a1726;
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    border-bottom: 1px solid #2d2840;
-    user-select: none;
-}
-
+.terminal { width: 520px; background: #0d0b12; border-radius: 8px; border: 1px solid #2d2840; overflow: hidden; }
+.term-titlebar { height: 32px; background: #1a1726; display: flex; align-items: center; padding: 0 12px; border-bottom: 1px solid #2d2840; user-select: none; }
 .term-title { font-size: 11px; color: #4a4060; font-family: inherit; flex: 1; }
-
 .term-winbtns { display: flex; align-items: center; gap: 1px; }
-
-.term-wbtn {
-    width: 26px;
-    height: 26px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.1s;
-}
-
+.term-wbtn { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.1s; }
 .term-wbtn:hover { background: #2d2840; }
 .term-wbtn:hover svg line, .term-wbtn:hover svg rect { stroke: #c4b8e0; }
 .term-wbtn.close:hover { background: #5a1e1e; }
 .term-wbtn.close:hover svg line { stroke: #f87171; }
-
 .term-body { padding: 16px 20px 20px; display: flex; flex-direction: column; min-height: 200px; }
-
 .tl { font-size: 13px; line-height: 1.8; white-space: pre; font-family: inherit; }
 .tl.dim   { color: #3d3558; }
 .tl.muted { color: #6b5f8a; }
 .tl.white { color: #c4b8e0; }
 .tl.green { color: #4ade80; }
 .tl.err   { color: #f87171; }
-
-.term-input-row {
-    display: flex;
-    align-items: center;
-    font-size: 13px;
-    line-height: 1.8;
-    font-family: inherit;
-}
-
+.term-input-row { display: flex; align-items: center; font-size: 13px; line-height: 1.8; font-family: inherit; }
 .term-prompt { color: #a78bfa; white-space: pre; }
-
-.term-field {
-    background: none;
-    border: none;
-    outline: none;
-    color: #e2d9f3;
-    font-size: 13px;
-    font-family: inherit;
-    caret-color: #a78bfa;
-    flex: 1;
-    width: 0;
-}
-
-.term-cursor {
-    display: inline-block;
-    width: 8px;
-    height: 15px;
-    background: #a78bfa;
-    vertical-align: middle;
-    animation: tblink 1.1s step-end infinite;
-}
-
+.term-field { background: none; border: none; outline: none; color: #e2d9f3; font-size: 13px; font-family: inherit; caret-color: #a78bfa; flex: 1; width: 0; }
+.term-cursor { display: inline-block; width: 8px; height: 15px; background: #a78bfa; vertical-align: middle; animation: tblink 1.1s step-end infinite; }
 @keyframes tblink { 0%,100%{opacity:1} 50%{opacity:0} }
 
+/* profile popover */
 .profile-popover {
-    position: fixed;
-    bottom: 62px;
-    left: 60px;
-    width: 224px;
-    background: #201d2b;
-    border: 1px solid #2d2840;
-    border-radius: 14px;
-    overflow: hidden;
-    display: none;
-    flex-direction: column;
-    z-index: 9999;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    position: fixed; bottom: 62px; left: 60px; width: 224px;
+    background: #201d2b; border: 1px solid #2d2840; border-radius: 14px;
+    overflow: hidden; display: none; flex-direction: column;
+    z-index: 9999; box-shadow: 0 8px 32px rgba(0,0,0,0.6);
     font-family: system-ui, -apple-system, sans-serif;
 }
 .profile-popover-top {
@@ -267,28 +275,16 @@ body {
 }
 .profile-popover-avatar {
     width: 42px; height: 42px; border-radius: 12px;
-    background: rgba(167,139,250,0.18);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px; font-weight: 800; color: #a78bfa; flex-shrink: 0;
-    border: 1.5px solid rgba(167,139,250,0.25);
+    background: rgba(167,139,250,0.18); display: flex; align-items: center;
+    justify-content: center; font-size: 20px; font-weight: 800; color: #a78bfa;
+    flex-shrink: 0; border: 1.5px solid rgba(167,139,250,0.25);
 }
 .profile-popover-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.profile-popover-name {
-    font-size: 13px; font-weight: 700; color: #e2d9f3;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.profile-popover-email {
-    font-size: 11px; color: #6b5f8a;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
+.profile-popover-name { font-size: 13px; font-weight: 700; color: #e2d9f3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.profile-popover-email { font-size: 11px; color: #6b5f8a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .profile-popover-divider { display: none; }
 .profile-popover-actions { padding: 6px; display: flex; flex-direction: column; gap: 1px; }
-.profile-popover-action {
-    font-size: 12px; color: #6b5f8a; cursor: pointer;
-    padding: 8px 10px; border-radius: 8px;
-    transition: background 0.12s, color 0.12s;
-    display: flex; align-items: center; gap: 9px;
-}
+.profile-popover-action { font-size: 12px; color: #6b5f8a; cursor: pointer; padding: 8px 10px; border-radius: 8px; transition: background 0.12s, color 0.12s; display: flex; align-items: center; gap: 9px; }
 .profile-popover-action:hover { background: rgba(167,139,250,0.08); color: #e2d9f3; }
 .profile-popover-action.danger:hover { background: rgba(248,113,113,0.08); color: #f87171; }
 </style>
@@ -357,32 +353,67 @@ body {
 
 <div class="topbar">
     <div class="topbar-logo">Slate</div>
-    <div class="topbar-actions">
-        <button class="btn-login" id="loginBtn">
-            <i class="codicon codicon-account"></i>
-            Sign in
-        </button>
+    <div class="topbar-right">
+        <span class="topbar-time" id="topbarTime"></span>
+        <div class="topbar-actions">
+            <button class="btn-login" id="loginBtn">
+                <i class="codicon codicon-account"></i>
+                Sign in
+            </button>
+        </div>
     </div>
 </div>
 
 <div class="content">
-    <div class="home-body">
-        <div class="home-title">Welcome to Slate</div>
+    <div class="home-hero">
+        <div class="home-greeting" id="homeGreeting">Welcome to Slate.</div>
+        <div class="home-greeting-sub" id="homeGreetingSub">Open a project to get started.</div>
+    </div>
 
-        <div class="home-section">
-            <div class="home-section-label">Start</div>
-            <ul class="home-links">
-                <li id="newProjectLink"><i class="codicon codicon-add"></i> New project</li>
-                <li id="openFileLink"><i class="codicon codicon-go-to-file"></i> Open file</li>
-                <li id="openFolderLink"><i class="codicon codicon-folder-opened"></i> Open folder</li>
-            </ul>
+    <div class="home-grid">
+        <div class="home-col">
+            <div class="home-section">
+                <div class="home-section-label">Start</div>
+                <div class="action-list">
+                    <div class="action-item" id="newProjectLink">
+                        <div class="action-icon"><i class="codicon codicon-add"></i></div>
+                        <div class="action-text">
+                            <div class="action-name">New project</div>
+                            <div class="action-desc">Start from scratch</div>
+                        </div>
+                    </div>
+                    <div class="action-item" id="openFolderLink">
+                        <div class="action-icon"><i class="codicon codicon-folder-opened"></i></div>
+                        <div class="action-text">
+                            <div class="action-name">Open folder</div>
+                            <div class="action-desc">Load a local directory</div>
+                        </div>
+                    </div>
+                    <div class="action-item" id="openFileLink">
+                        <div class="action-icon"><i class="codicon codicon-go-to-file"></i></div>
+                        <div class="action-text">
+                            <div class="action-name">Open file</div>
+                            <div class="action-desc">Open a single file</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="home-section">
+                <div class="home-section-label">Due soon</div>
+                <div class="home-tasks-widget">
+                    <div id="homeTasksList"></div>
+                </div>
+            </div>
         </div>
 
-        <div class="home-section">
-            <div class="home-section-label">Recent</div>
-            <ul id="recentList" class="home-links">
-                <li class="muted"><i class="codicon codicon-history"></i> No recent projects</li>
-            </ul>
+        <div class="home-col">
+            <div class="home-section">
+                <div class="home-section-label">Recent</div>
+                <div class="recent-cards" id="recentList">
+                    <div class="muted">No recent projects</div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -420,6 +451,57 @@ body {
     </div>
 </div>
 
+
+<div class="profile-popover" id="profilePopover">
+    <div class="profile-popover-top">
+        <div class="profile-popover-avatar" id="popoverAvatar">?</div>
+        <div class="profile-popover-info">
+            <div class="profile-popover-name" id="popoverName">Not signed in</div>
+            <div class="profile-popover-email" id="popoverEmail">—</div>
+        </div>
+    </div>
+    <div class="profile-popover-actions">
+        <div class="profile-popover-action danger" id="popoverLogout">
+            <i class="codicon codicon-sign-out"></i> Sign out
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="task-modal" id="taskModal">
+    <div class="task-modal-content">
+        <div class="task-modal-header">
+            <div class="task-modal-title" id="taskModalTitle">New Task</div>
+            <button class="task-modal-close" id="taskCancelBtn"><i class="codicon codicon-close"></i></button>
+        </div>
+        <div class="task-modal-body">
+            <div class="task-modal-field">
+                <div class="task-modal-label">Title</div>
+                <input class="task-modal-input" type="text" id="taskTitle" placeholder="What needs to be done?">
+            </div>
+            <div class="task-modal-field">
+                <div class="task-modal-label">Description</div>
+                <textarea class="task-modal-textarea" id="taskDesc" rows="3" placeholder="Add some details..."></textarea>
+            </div>
+            <div class="task-modal-row">
+                <div class="task-modal-field">
+                    <div class="task-modal-label">Due date</div>
+                    <input class="task-modal-input" type="date" id="taskDate">
+                </div>
+                <div class="task-modal-field task-modal-field-color">
+                    <div class="task-modal-label">Color</div>
+                    <input type="color" id="taskColor" value="#a78bfa">
+                </div>
+            </div>
+        </div>
+        <div class="task-modal-footer">
+            <button id="taskCancelFooterBtn" class="task-modal-cancel">Cancel</button>
+            <button id="taskSubmitBtn" class="task-modal-submit">Add Task</button>
+        </div>
+    </div>
+</div>
 <script>
 function getUser()  { return localStorage.getItem('slate_user') || '__guest__' }
 function ukey(k)    { return k + '_' + getUser() }
@@ -459,28 +541,45 @@ const termInputRow  = document.getElementById('termInputRow')
 const termCursorRow = document.getElementById('termCursorRow')
 const termPromptEl  = document.getElementById('termPrompt')
 const termInput     = document.getElementById('termInput')
-const termTitle     = document.getElementById('termTitle')
 
-let termStep = 'cmd'
-let termUser = ''
-let termMode = 'login'
-let termEmail = ''
-let termPassword = '' 
+let termStep     = 'cmd'
+let termUser     = ''
+let termMode     = 'login'
+let termEmail    = ''
+let termPassword = ''
 
 function addLine(text, cls) {
-    const d = document.createElement('div')
-    d.className = 'tl ' + (cls || 'white')
-    d.textContent = text
-    termLines.appendChild(d)
+    const div = document.createElement('div')
+    div.className = 'tl' + (cls ? ' ' + cls : '')
+    div.textContent = text
+    termLines.appendChild(div)
+    termLines.scrollTop = termLines.scrollHeight
 }
 
-function setPrompt(text, type = 'text') {
+function setPrompt(text, type) {
     termPromptEl.textContent = text
-    termInput.type = type
+    termInput.type = type === 'password' ? 'password' : 'text'
     termInput.value = ''
     termInputRow.style.display = 'flex'
-    termCursorRow.style.display = 'none'
     setTimeout(() => termInput.focus(), 30)
+}
+
+function openModal() {
+    termLines.innerHTML = ''
+    termInput.value = ''
+    termStep = 'cmd'; termUser = ''; termEmail = ''; termPassword = ''
+    document.getElementById('termTitle').textContent = 'slate-auth'
+    loginModal.classList.add('open')
+    addLine('Arch Linux 6.8.1-arch1-1 (tty1)', 'muted')
+    addLine(' ')
+    setPrompt('[slate ~]$ ')
+    addLine('Type login or signup to continue.', 'muted')
+}
+
+function closeModal() {
+    loginModal.classList.remove('open')
+    termInput.value = ''
+    termStep = 'cmd'
 }
 
 function finish(user) {
@@ -496,140 +595,66 @@ function finish(user) {
         termLines.appendChild(row)
         localStorage.setItem('slate_user', user)
         document.getElementById('loginBtn').innerHTML = '<i class="codicon codicon-account"></i> ' + user
-        var init = user[0].toUpperCase()
-        var el = document.getElementById('activityAvatar')
+        const init = user[0].toUpperCase()
+        const el = document.getElementById('activityAvatar')
         if (el) el.textContent = init
-        var pa = document.getElementById('popoverAvatar')
-        var pn = document.getElementById('popoverName')
-        var pe = document.getElementById('popoverEmail')
-        if (pa) pa.textContent = init
-        if (pn) pn.textContent = user
-        if (pe) pe.textContent = localStorage.getItem('slate_email') || '—'
-        if (typeof loadRecents === 'function') loadRecents()
+        if (typeof loadRecents === 'function')    loadRecents()
+        if (typeof loadHomeTasks === 'function')  loadHomeTasks()
+        if (typeof updateGreeting === 'function') updateGreeting()
     }, 280)
-}
-
-function openModal() {
-    const existing = localStorage.getItem('slate_user')
-    if (existing) return
-    loginModal.classList.add('open')
-    termLines.innerHTML = ''
-    termStep = 'cmd'
-    termUser = ''
-    termEmail = ''
-    termPassword = ''
-    termTitle.textContent = 'slate-auth'
-    addLine('Type login or signup to continue.', 'muted')
-    addLine(' ')
-    setPrompt('[slate ~]$ ')
-}
-
-function closeModal() {
-    loginModal.classList.remove('open')
-    termLines.innerHTML = ''
-    termStep = 'cmd'
-    termInput.value = ''
-    termInputRow.style.display = 'none'
-    termCursorRow.style.display = 'flex'
 }
 
 termInput.addEventListener('keydown', e => {
     if (e.key !== 'Enter') return
-    const val = termInput.value.trim()
+    const val = termInput.value
+    termInput.value = ''
 
     if (termStep === 'cmd') {
         addLine('[slate ~]$ ' + val, 'white')
-        if (val === 'login') {
-            termMode = 'login'
-            termStep = 'username'
-            addLine(' ')
-            setPrompt('Username: ')
-        } else if (val === 'signup') {
-            termMode = 'signup'
-            termStep = 'username'
-            addLine(' ')
-            setPrompt('Username: ')
-        } else if (val === '') {
-            setPrompt('[slate ~]$ ')
-        } else {
-            addLine('bash: ' + val + ': command not found', 'err')
-            addLine('Hint: try login or signup', 'muted')
-            setPrompt('[slate ~]$ ')
-        }
+        if (val === 'login') { termMode = 'login'; termStep = 'username'; setPrompt('Username: ') }
+        else if (val === 'signup') { termMode = 'signup'; termStep = 'username'; setPrompt('Username: ') }
+        else if (val === '') setPrompt('[slate ~]$ ')
+        else { addLine('bash: ' + val + ': command not found', 'err'); setPrompt('[slate ~]$ ') }
 
     } else if (termStep === 'username') {
         if (!val) { setPrompt('Username: '); return }
         addLine('Username: ' + val, 'white')
         termUser = val
         if (termMode === 'signup') {
-            const existing = localStorage.getItem('slate_account_' + val)
-            if (existing) {
-                addLine('Username already taken.', 'err')
-                termStep = 'username'
-                setPrompt('Username: ')
-                return
+            if (localStorage.getItem('slate_account_' + val)) {
+                addLine('Username already taken.', 'err'); termStep = 'username'; setPrompt('Username: '); return
             }
-            termStep = 'email'
-            setPrompt('Email: ')
+            termStep = 'email'; setPrompt('Email: ')
         } else {
-            const account = localStorage.getItem('slate_account_' + val)
-            if (!account) {
-                addLine('No account found for that username.', 'err')
-                termStep = 'username'
-                setPrompt('Username: ')
-                return
+            if (!localStorage.getItem('slate_account_' + val)) {
+                addLine('No account found for that username.', 'err'); termStep = 'username'; setPrompt('Username: '); return
             }
-            termStep = 'password'
-            setPrompt('Password: ', 'password')
+            termStep = 'password'; setPrompt('Password: ', 'password')
         }
 
     } else if (termStep === 'email') {
-        if (!val || !val.includes('@')) {
-            addLine('Enter a valid email address.', 'err')
-            setPrompt('Email: ')
-            return
-        }
+        if (!val || !val.includes('@')) { addLine('Enter a valid email address.', 'err'); setPrompt('Email: '); return }
         addLine('Email: ' + val, 'white')
-        termEmail = val
-        termStep = 'password'
-        setPrompt('Password: ', 'password')
+        termEmail = val; termStep = 'password'; setPrompt('Password: ', 'password')
 
     } else if (termStep === 'password') {
-        if (!val || val.length < 4) {
-            addLine('Password must be at least 4 characters.', 'err')
-            setPrompt('Password: ', 'password')
-            return
-        }
+        if (!val || val.length < 4) { addLine('Password must be at least 4 characters.', 'err'); setPrompt('Password: ', 'password'); return }
         addLine('Password: ', 'white')
         if (termMode === 'signup') {
-            termPassword = val
-            termStep = 'confirm'
-            setPrompt('Confirm password: ', 'password')
+            termPassword = val; termStep = 'confirm'; setPrompt('Confirm password: ', 'password')
         } else {
             const account = JSON.parse(localStorage.getItem('slate_account_' + termUser) || '{}')
-            if (account.password !== val) {
-                addLine('Incorrect password.', 'err')
-                termStep = 'password'
-                setPrompt('Password: ', 'password')
-                return
-            }
-            termStep = 'done'
+            if (account.password !== val) { addLine('Incorrect password.', 'err'); setPrompt('Password: ', 'password'); return }
             localStorage.setItem('slate_email', account.email || '')
-            finish(termUser)
+            termStep = 'done'; finish(termUser)
         }
 
     } else if (termStep === 'confirm') {
         addLine('Confirm password: ', 'white')
-        if (val !== termPassword) {
-            addLine('Passwords do not match.', 'err')
-            termStep = 'confirm'
-            setPrompt('Confirm password: ', 'password')
-            return
-        }
+        if (val !== termPassword) { addLine('Passwords do not match.', 'err'); termStep = 'confirm'; setPrompt('Confirm password: ', 'password'); return }
         localStorage.setItem('slate_account_' + termUser, JSON.stringify({ password: termPassword, email: termEmail }))
         localStorage.setItem('slate_email', termEmail)
-        termStep = 'done'
-        finish(termUser)
+        termStep = 'done'; finish(termUser)
     }
 })
 
@@ -643,8 +668,8 @@ document.getElementById('profileBtn').addEventListener('click', () => { if (!loc
 const savedUser = localStorage.getItem('slate_user')
 if (savedUser) {
     loginBtn.innerHTML = '<i class="codicon codicon-account"></i> ' + savedUser
-    document.getElementById('activityAvatar').textContent = savedUser[0].toUpperCase()
-    document.getElementById('loginBtn').innerHTML = '<i class="codicon codicon-account"></i> ' + savedUser
+    const el = document.getElementById('activityAvatar')
+    if (el) el.textContent = savedUser[0].toUpperCase()
 }
 
 document.getElementById('newProjectLink').onclick = () => {
@@ -660,27 +685,175 @@ document.getElementById('newProjectLink').onclick = () => {
     location.href = 'index.html'
 }
 
-const fileInput = document.createElement('input')
-fileInput.type = 'file'
-fileInput.onchange = () => { if (fileInput.files[0]) location.href = 'index.html' }
+const fileInput2 = document.createElement('input')
+fileInput2.type = 'file'
+fileInput2.onchange = () => { if (fileInput2.files[0]) location.href = 'index.html' }
 
-const folderInput = document.createElement('input')
-folderInput.type = 'file'
-folderInput.webkitdirectory = true
-folderInput.onchange = () => { if (folderInput.files.length) location.href = 'index.html' }
+const folderInput2 = document.createElement('input')
+folderInput2.type = 'file'
+folderInput2.webkitdirectory = true
+folderInput2.onchange = () => { if (folderInput2.files.length) location.href = 'index.html' }
 
-document.getElementById('openFileLink').onclick = async () => {
-    try {
-        const [handle] = await window.showOpenFilePicker()
-        location.href = 'index.html'
-    } catch { fileInput.click() }
+document.getElementById('openFileLink').onclick = () => {
+    if (window.showOpenFilePicker) { window.showOpenFilePicker().then(() => location.href = 'index.html').catch(() => {}) }
+    else fileInput2.click()
 }
 
-document.getElementById('openFolderLink').onclick = async () => {
-    try {
-        const handle = await window.showDirectoryPicker()
-        location.href = 'index.html'
-    } catch { folderInput.click() }
+document.getElementById('openFolderLink').onclick = () => {
+    if (window.showDirectoryPicker) { window.showDirectoryPicker().then(() => location.href = 'index.html').catch(() => {}) }
+    else folderInput2.click()
+}
+
+const addTaskBtn      = document.getElementById('addTaskBtn')
+const modal           = document.getElementById('taskModal')
+const cancelBtn       = document.getElementById('taskCancelBtn')
+const cancelFooterBtn = document.getElementById('taskCancelFooterBtn')
+const submitBtn       = document.getElementById('taskSubmitBtn')
+const tasksList       = document.getElementById('tasksList')
+const titleInput      = document.getElementById('taskTitle')
+const descInput       = document.getElementById('taskDesc')
+const dateInput       = document.getElementById('taskDate')
+const colorInput      = document.getElementById('taskColor')
+let editingLi = null
+
+function openTaskModal() {
+    editingLi = null
+    document.getElementById('taskModalTitle').textContent = 'New Task'
+    submitBtn.textContent = 'Add Task'
+    modal.style.display = 'flex'
+    setTimeout(() => titleInput && titleInput.focus(), 50)
+}
+
+function closeTaskModal() {
+    modal.style.display = 'none'
+    editingLi = null
+    if (titleInput) titleInput.value = ''
+    if (descInput)  descInput.value  = ''
+    if (dateInput)  dateInput.value  = ''
+}
+
+if (addTaskBtn)      addTaskBtn.onclick      = openTaskModal
+if (cancelBtn)       cancelBtn.onclick       = closeTaskModal
+if (cancelFooterBtn) cancelFooterBtn.onclick = closeTaskModal
+if (modal) modal.addEventListener('click', e => { if (e.target === modal) closeTaskModal() })
+
+if (submitBtn) {
+    submitBtn.onclick = () => {
+        const title = titleInput.value.trim()
+        if (!title) return
+        const desc  = descInput  ? descInput.value.trim()  : ''
+        const date  = dateInput  ? dateInput.value         : ''
+        const color = colorInput ? colorInput.value        : '#a78bfa'
+        if (editingLi) {
+            const wasDone = editingLi.classList.contains('task-done')
+            editingLi.remove()
+            editingLi = null
+            createTask(title, desc, date, color, wasDone)
+        } else {
+            createTask(title, desc, date, color, false)
+        }
+        saveTasks()
+        loadHomeTasks()
+        closeTaskModal()
+    }
+}
+
+function isOverdueDate(date) {
+    if (!date) return false
+    const today = new Date(); today.setHours(0,0,0,0)
+    return new Date(date) < today
+}
+
+function createTask(title, desc, date, color, done) {
+    if (!tasksList) return
+    const li = document.createElement('li')
+    const overdue = !done && isOverdueDate(date)
+    li.className = 'task-item' + (done ? ' task-done' : '') + (overdue ? ' task-overdue' : '')
+    li.dataset.title = title; li.dataset.desc = desc || ''; li.dataset.date = date || ''; li.dataset.color = color || '#a78bfa'
+    const bar = document.createElement('div')
+    bar.className = 'task-color'; bar.style.setProperty('--task-col', color); bar.style.background = 'var(--task-col)'
+    const info = document.createElement('div'); info.className = 'task-info'
+    const name = document.createElement('span'); name.className = 'task-title'; name.textContent = title
+    info.appendChild(name)
+    if (desc || date) {
+        const preview = document.createElement('div'); preview.className = 'task-preview'
+        if (desc) { const d = document.createElement('span'); d.className = 'task-desc'; d.textContent = desc; preview.appendChild(d) }
+        if (date) { const dt = document.createElement('span'); dt.className = 'task-date'; dt.textContent = 'Due: ' + date; preview.appendChild(dt) }
+        info.appendChild(preview)
+    }
+    const actions = document.createElement('div'); actions.className = 'task-actions'
+    const doneBtn = document.createElement('button'); doneBtn.className = 'task-btn task-btn-done'; doneBtn.innerHTML = '<i class="codicon codicon-check"></i>'
+    doneBtn.onclick = e => { e.stopPropagation(); li.classList.toggle('task-done'); li.classList.toggle('task-overdue', !li.classList.contains('task-done') && isOverdueDate(li.dataset.date)); saveTasks(); applyTaskFilter(); loadHomeTasks() }
+    const editBtn = document.createElement('button'); editBtn.className = 'task-btn task-btn-edit'; editBtn.innerHTML = '<i class="codicon codicon-edit"></i>'
+    editBtn.onclick = e => {
+        e.stopPropagation(); editingLi = li
+        document.getElementById('taskModalTitle').textContent = 'Edit Task'; submitBtn.textContent = 'Save'
+        titleInput.value = li.dataset.title || ''
+        if (descInput)  descInput.value  = li.dataset.desc  || ''
+        if (dateInput)  dateInput.value  = li.dataset.date  || ''
+        if (colorInput) colorInput.value = li.dataset.color || '#a78bfa'
+        modal.style.display = 'flex'; setTimeout(() => titleInput && titleInput.focus(), 50)
+    }
+    const deleteBtn = document.createElement('button'); deleteBtn.className = 'task-btn task-btn-delete'; deleteBtn.innerHTML = '<i class="codicon codicon-trash"></i>'
+    deleteBtn.onclick = e => { e.stopPropagation(); li.remove(); saveTasks(); loadHomeTasks() }
+    actions.appendChild(doneBtn); actions.appendChild(editBtn); actions.appendChild(deleteBtn)
+    li.appendChild(bar); li.appendChild(info); li.appendChild(actions)
+    tasksList.appendChild(li)
+}
+
+function saveTasks() {
+    if (!tasksList) return
+    const data = []
+    document.querySelectorAll('.task-item').forEach(t => {
+        data.push({ title: t.dataset.title, desc: t.dataset.desc, date: t.dataset.date, color: t.dataset.color, done: t.classList.contains('task-done') })
+    })
+    localStorage.setItem(ukey('slate_tasks'), JSON.stringify(data))
+}
+
+let activeTaskFilter = 'all'
+document.querySelectorAll('.tasks-filter-btn').forEach(btn => {
+    btn.onclick = () => {
+        activeTaskFilter = btn.dataset.filter
+        document.querySelectorAll('.tasks-filter-btn').forEach(b => b.classList.remove('active'))
+        btn.classList.add('active')
+        applyTaskFilter()
+    }
+})
+
+function applyTaskFilter() {
+    const today = new Date(); today.setHours(0,0,0,0)
+    document.querySelectorAll('.task-item').forEach(t => {
+        const isDone = t.classList.contains('task-done')
+        const isOverdue = !isDone && t.dataset.date && new Date(t.dataset.date) < today
+        let show = true
+        if (activeTaskFilter === 'done')    show = isDone
+        if (activeTaskFilter === 'open')    show = !isDone
+        if (activeTaskFilter === 'overdue') show = isOverdue
+        t.style.display = show ? '' : 'none'
+    })
+}
+
+function loadTasks() {
+    if (!tasksList) return
+    const data = JSON.parse(localStorage.getItem(ukey('slate_tasks')) || '[]')
+    data.forEach(t => createTask(t.title, t.desc, t.date, t.color, t.done))
+}
+
+function getRelTime(ts) {
+    if (!ts) return ''
+    const diff = Date.now() - ts
+    const m = Math.floor(diff / 60000)
+    if (m < 60) return m <= 1 ? 'just now' : m + 'm ago'
+    const h = Math.floor(m / 60)
+    if (h < 24) return h + 'h ago'
+    const d = Math.floor(h / 24)
+    if (d === 1) return 'yesterday'
+    if (d < 7) return d + 'd ago'
+    return new Date(ts).toLocaleDateString('en', { month: 'short', day: 'numeric' })
+}
+
+function tagClass(ext) {
+    return { html: 't-html', htm: 't-html', css: 't-css', scss: 't-css', js: 't-js', mjs: 't-js', ts: 't-ts', tsx: 't-ts', py: 't-py' }[ext] || ''
 }
 
 function loadRecents() {
@@ -688,37 +861,170 @@ function loadRecents() {
     const recent = JSON.parse(localStorage.getItem(ukey('slate_recents')) || '[]')
     recentList.innerHTML = ''
     if (!recent.length) {
-        recentList.innerHTML = '<li class="muted"><i class="codicon codicon-history"></i> No recent projects</li>'
+        recentList.innerHTML = '<div class="muted">No recent projects</div>'
         return
     }
     recent.forEach(p => {
-        const li = document.createElement('li')
-        const time = p.time ? new Date(p.time).toLocaleDateString() : ''
-        li.innerHTML = '<i class="codicon codicon-folder"></i> ' + p.name
-            + (time ? '<span style="font-size:11px;color:#6b5f8a;margin-left:8px;">' + time + '</span>' : '')
-        li.onclick = () => {
-            localStorage.setItem(ukey('slate_project_name'), p.name)
-            location.href = 'index.html'
-        }
-        recentList.appendChild(li)
+        const card = document.createElement('div')
+        card.className = 'recent-card'
+        const fileCount = JSON.parse(localStorage.getItem(ukey('slate_tree')) || '[]').reduce(function cnt(acc, n) { return n.type === 'file' ? acc + 1 : (n.children || []).reduce(cnt, acc) }, 0)
+        const dateStr = p.time ? getRelTime(p.time) : ''
+        card.innerHTML = '<div class="rc-body">'
+            + '<div class="rc-name">' + p.name + '</div>'
+            + '<div class="rc-meta">'
+            + (fileCount ? '<span class="rc-time">' + fileCount + ' file' + (fileCount !== 1 ? 's' : '') + '</span><span>·</span>' : '')
+            + '<span class="rc-time">' + dateStr + '</span>'
+            + '</div>'
+            + '</div>'
+            + '<div class="rc-arrow"><i class="codicon codicon-arrow-right"></i></div>'
+        card.onclick = () => { localStorage.setItem(ukey('slate_project_name'), p.name); location.href = 'index.html' }
+        recentList.appendChild(card)
     })
 }
+
+function openTasksPanel(highlightTitle) {
+    const tasksIcon = document.querySelector('.activity-icon[data-view="tasks"]')
+    if (tasksIcon) tasksIcon.onclick()
+    if (highlightTitle) {
+        setTimeout(() => {
+            document.querySelectorAll('.task-item').forEach(li => {
+                if (li.dataset.title === highlightTitle) {
+                    li.scrollIntoView({ block: 'center', behavior: 'smooth' })
+                    li.classList.add('task-highlight')
+                    setTimeout(() => li.classList.remove('task-highlight'), 1800)
+                }
+            })
+        }, 120)
+    }
+}
+
+function loadHomeTasks() {
+    const el = document.getElementById('homeTasksList')
+    if (!el) return
+    const tasks = JSON.parse(localStorage.getItem(ukey('slate_tasks')) || '[]')
+    const today = new Date(); today.setHours(0,0,0,0)
+    const relevant = tasks.filter(t => !t.done).sort((a, b) => {
+        if (!a.date) return 1; if (!b.date) return -1
+        return new Date(a.date) - new Date(b.date)
+    }).slice(0, 5)
+    el.innerHTML = ''
+    if (!relevant.length) {
+        el.innerHTML = '<div class="htw-empty">No upcoming tasks</div>'
+        return
+    }
+    relevant.forEach(t => {
+        const isOverdue = t.date && new Date(t.date) < today
+        const isToday   = t.date && new Date(t.date).toDateString() === today.toDateString()
+        const label = isOverdue ? 'overdue' : isToday ? 'today' : t.date ? new Date(t.date).toLocaleDateString('en', { month: 'short', day: 'numeric' }) : ''
+
+        const row = document.createElement('div')
+        row.className = 'htw-row'
+
+        const dot = document.createElement('div')
+        dot.className = 'htw-dot'
+        dot.style.background = t.color || '#a78bfa'
+
+        const name = document.createElement('div')
+        name.className = 'htw-name'
+        name.textContent = t.title
+
+        const actions = document.createElement('div')
+        actions.className = 'htw-actions'
+
+        if (label) {
+            const due = document.createElement('div')
+            due.className = 'htw-due' + (isOverdue ? ' overdue' : '')
+            due.textContent = label
+            actions.appendChild(due)
+        }
+
+        const doneBtn = document.createElement('button')
+        doneBtn.className = 'htw-btn'
+        doneBtn.title = 'Mark done'
+        doneBtn.innerHTML = '<i class="codicon codicon-check"></i>'
+        doneBtn.onclick = e => {
+            e.stopPropagation()
+            const all = JSON.parse(localStorage.getItem(ukey('slate_tasks')) || '[]')
+            const idx = all.findIndex(x => x.title === t.title && x.date === t.date)
+            if (idx !== -1) { all[idx].done = true; localStorage.setItem(ukey('slate_tasks'), JSON.stringify(all)) }
+            const li = document.querySelector('.task-item[data-title="' + CSS.escape(t.title) + '"]')
+            if (li) { li.classList.add('task-done'); li.classList.remove('task-overdue') }
+            saveTasks()
+            loadHomeTasks()
+            updateGreeting()
+        }
+
+        const delBtn = document.createElement('button')
+        delBtn.className = 'htw-btn htw-btn-delete'
+        delBtn.title = 'Delete'
+        delBtn.innerHTML = '<i class="codicon codicon-trash"></i>'
+        delBtn.onclick = e => {
+            e.stopPropagation()
+            const all = JSON.parse(localStorage.getItem(ukey('slate_tasks')) || '[]')
+            const filtered = all.filter(x => !(x.title === t.title && x.date === t.date))
+            localStorage.setItem(ukey('slate_tasks'), JSON.stringify(filtered))
+            const li = document.querySelector('.task-item[data-title="' + CSS.escape(t.title) + '"]')
+            if (li) li.remove()
+            loadHomeTasks()
+            updateGreeting()
+        }
+
+        actions.appendChild(doneBtn)
+        actions.appendChild(delBtn)
+
+        row.appendChild(dot)
+        row.appendChild(name)
+        row.appendChild(actions)
+
+        row.onclick = () => openTasksPanel(t.title)
+        el.appendChild(row)
+    })
+}
+
+function updateGreeting() {
+    const user = localStorage.getItem('slate_user')
+    const greetEl = document.getElementById('homeGreeting')
+    const subEl   = document.getElementById('homeGreetingSub')
+    if (!greetEl) return
+    const h = new Date().getHours()
+    const tod = h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening'
+    if (user) {
+        greetEl.innerHTML = 'Good ' + tod + ', ' + user + '.'
+        const tasks = JSON.parse(localStorage.getItem(ukey('slate_tasks')) || '[]')
+        const today = new Date(); today.setHours(0,0,0,0)
+        const due = tasks.filter(t => !t.done && t.date && new Date(t.date) <= today).length
+        const recent = JSON.parse(localStorage.getItem(ukey('slate_recents')) || '[]')
+        const last = recent[0] ? recent[0].name : null
+        let sub = ''
+        if (due) sub += '<span>' + due + ' task' + (due !== 1 ? 's' : '') + ' due</span>'
+        if (last) sub += (sub ? ' · ' : '') + 'last opened <span class="greeting-project" data-project="' + last + '">' + last + '</span>'
+        if (subEl) subEl.innerHTML = sub || 'Welcome back.'
+    } else {
+        greetEl.textContent = 'Welcome to Slate.'
+        if (subEl) subEl.textContent = 'Sign in or open a project to get started.'
+    }
+}
+
+function updateClock() {
+    const el = document.getElementById('topbarTime')
+    if (!el) return
+    el.textContent = new Date().toLocaleDateString('en', { weekday: 'short', month: 'short', day: 'numeric' })
+}
+
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('greeting-project')) {
+        const name = e.target.dataset.project
+        if (name) { localStorage.setItem(ukey('slate_project_name'), name); location.href = 'index.html' }
+    }
+})
+
+updateClock()
+setInterval(updateClock, 60000)
+loadTasks()
 loadRecents()
+loadHomeTasks()
+updateGreeting()
 </script>
-<div class="profile-popover" id="profilePopover">
-    <div class="profile-popover-top">
-        <div class="profile-popover-avatar" id="popoverAvatar">?</div>
-        <div class="profile-popover-info">
-            <div class="profile-popover-name" id="popoverName">Not signed in</div>
-            <div class="profile-popover-email" id="popoverEmail">—</div>
-        </div>
-    </div>
-    <div class="profile-popover-actions">
-        <div class="profile-popover-action danger" id="popoverLogout">
-            <i class="codicon codicon-sign-out"></i> Sign out
-        </div>
-    </div>
-</div>
 <script>
 (function() {
     var btn     = document.getElementById('profileBtn')
