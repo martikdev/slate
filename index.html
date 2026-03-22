@@ -187,7 +187,9 @@
     </div>
 
     <div class="main">
-        <div id="tabBar" class="tab-bar"></div>
+        <div id="chipStrip" class="chip-strip" style="display:none;">
+            <div id="chipList" class="chip-list"></div>
+        </div>
         <div id="editor-preview-split" class="editor-preview-split">
             <div id="editor-pane" class="editor-pane">
                 <div id="editor-container"></div>
@@ -238,16 +240,16 @@
         <div class="task-modal-body">
             <div class="task-modal-field">
                 <div class="task-modal-label">Title</div>
-                <input type="text" id="taskTitle" placeholder="What needs to be done?">
+                <input class="task-modal-input" type="text" id="taskTitle" placeholder="What needs to be done?">
             </div>
             <div class="task-modal-field">
                 <div class="task-modal-label">Description</div>
-                <textarea id="taskDesc" rows="3" placeholder="Add some details..."></textarea>
+                <textarea class="task-modal-textarea" id="taskDesc" rows="3" placeholder="Add some details..."></textarea>
             </div>
             <div class="task-modal-row">
                 <div class="task-modal-field">
                     <div class="task-modal-label">Due Date</div>
-                    <input type="date" id="taskDate">
+                    <input class="task-modal-input" type="date" id="taskDate">
                 </div>
                 <div class="task-modal-field task-modal-field-color">
                     <div class="task-modal-label">Color</div>
@@ -263,6 +265,28 @@
 </div>
 
 <div id="ac"></div>
+
+<div class="slate-dialog-overlay" id="slateDialog" style="display:none;">
+    <div class="slate-dialog">
+        <div class="slate-dialog-title" id="slateDialogTitle"></div>
+        <input class="slate-dialog-input" id="slateDialogInput" type="text" autocomplete="off" spellcheck="false">
+        <div class="slate-dialog-footer">
+            <button class="slate-dialog-btn cancel" id="slateDialogCancel">Cancel</button>
+            <button class="slate-dialog-btn confirm" id="slateDialogConfirm">OK</button>
+        </div>
+    </div>
+</div>
+
+<div class="slate-dialog-overlay" id="slateConfirm" style="display:none;">
+    <div class="slate-dialog">
+        <div class="slate-dialog-title" id="slateConfirmTitle"></div>
+        <div class="slate-dialog-body" id="slateConfirmBody"></div>
+        <div class="slate-dialog-footer">
+            <button class="slate-dialog-btn cancel" id="slateConfirmCancel">Cancel</button>
+            <button class="slate-dialog-btn danger" id="slateConfirmOk">Delete</button>
+        </div>
+    </div>
+</div>
 
 <script>
     if (!localStorage.getItem("slate_project_open")) {
