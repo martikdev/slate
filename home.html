@@ -15,6 +15,12 @@ body {
     color: #c4b8e0;
     height: 100vh;
     overflow: hidden;
+    transition: background 0.35s ease, color 0.35s ease;
+}
+
+body[data-theme="light"] {
+    background: #faf9fe;
+    color: #2d2542;
 }
 
 .app { display: flex; height: 100vh; width: 100vw; }
@@ -36,12 +42,16 @@ body {
     padding: 0 20px;
     flex-shrink: 0;
     justify-content: space-between;
+    transition: background 0.35s ease, border-color 0.35s ease;
 }
+body[data-theme="light"] .topbar { background: #faf9fe; border-color: #d4cef0; }
 
-.topbar-logo { font-size: 15px; font-weight: 700; color: #e8e0f8; letter-spacing: -0.02em; }
+.topbar-logo { font-size: 15px; font-weight: 700; color: #e8e0f8; letter-spacing: -0.02em; transition: color 0.35s; }
+body[data-theme="light"] .topbar-logo { color: #1a1530; }
 
 .topbar-right { display: flex; align-items: center; gap: 12px; }
-.topbar-time { font-size: 11px; color: #4a4060; font-variant-numeric: tabular-nums; }
+.topbar-time { font-size: 11px; color: #4a4060; font-variant-numeric: tabular-nums; transition: color 0.35s; }
+body[data-theme="light"] .topbar-time { color: #7a6e9a; }
 .topbar-actions { display: flex; align-items: center; gap: 8px; }
 
 .btn-login {
@@ -59,13 +69,71 @@ body {
     gap: 6px;
 }
 .btn-login:hover { background: rgba(167,139,250,0.08); color: #e2d9f3; border-color: rgba(167,139,250,0.3); }
+body[data-theme="light"] .btn-login { border-color: #d4cef0; color: #7a6e9a; }
+body[data-theme="light"] .btn-login:hover { background: rgba(124,92,250,0.08); color: #2d2542; border-color: rgba(124,92,250,0.3); }
 .btn-login i { font-size: 14px; }
+
+.btn-theme {
+    background: none;
+    border: 1px solid #2d2840;
+    color: #7a6e9a;
+    font-size: 12px;
+    font-family: inherit;
+    padding: 5px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+}
+.btn-theme:hover { background: rgba(167,139,250,0.08); color: #e2d9f3; border-color: rgba(167,139,250,0.3); }
+body[data-theme="light"] .btn-theme { border-color: #d4cef0; color: #7a6e9a; }
+body[data-theme="light"] .btn-theme:hover { background: rgba(124,92,250,0.08); color: #2d2542; border-color: rgba(124,92,250,0.3); }
+
+.btn-theme-track {
+    width: 32px;
+    height: 16px;
+    border-radius: 8px;
+    background: #2d2840;
+    position: relative;
+    transition: background 0.35s ease;
+    flex-shrink: 0;
+}
+body[data-theme="light"] .btn-theme-track { background: #a78bfa; }
+
+.btn-theme-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #6b5f8a;
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), background 0.35s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+}
+body[data-theme="light"] .btn-theme-thumb { transform: translateX(16px); background: #fff; }
+
+.btn-theme-icon {
+    font-size: 13px;
+    transition: opacity 0.2s ease, transform 0.3s ease;
+    color: #c4b8e0;
+}
+body[data-theme="light"] .btn-theme-icon { color: #2d2542; }
 
 .content {
     flex: 1;
     overflow-y: auto;
     padding: 48px 64px;
+    transition: background 0.35s ease;
 }
+body[data-theme="light"] .content { background: #faf9fe; }
 
 .home-hero { margin-bottom: 40px; }
 
@@ -76,10 +144,13 @@ body {
     letter-spacing: -0.03em;
     line-height: 1.2;
     margin-bottom: 6px;
+    transition: color 0.35s;
 }
+body[data-theme="light"] .home-greeting { color: #1a1530; }
 
-.home-greeting-sub { font-size: 13px; color: #6b5f8a; }
+.home-greeting-sub { font-size: 13px; color: #6b5f8a; transition: color 0.35s; }
 .home-greeting-sub span { color: #a78bfa; }
+body[data-theme="light"] .home-greeting-sub span { color: #7c5cfa; }
 .greeting-project { cursor: pointer; text-decoration: underline; text-decoration-color: rgba(167,139,250,0.4); text-underline-offset: 2px; }
 .greeting-project:hover { text-decoration-color: #a78bfa; }
 
@@ -94,7 +165,9 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.08em;
     margin-bottom: 4px;
+    transition: color 0.35s;
 }
+body[data-theme="light"] .home-section-label { color: #7a6e9a; }
 
 .action-list { display: flex; flex-direction: column; gap: 2px; }
 
@@ -108,6 +181,7 @@ body {
     transition: background 0.1s;
 }
 .action-item:hover { background: rgba(167,139,250,0.07); }
+body[data-theme="light"] .action-item:hover { background: rgba(124,92,250,0.07); }
 
 .action-icon {
     width: 28px;
@@ -120,11 +194,15 @@ body {
     flex-shrink: 0;
     font-size: 14px;
     color: #a78bfa;
+    transition: background 0.35s, color 0.35s;
 }
+body[data-theme="light"] .action-icon { background: rgba(124,92,250,0.1); color: #7c5cfa; }
 
 .action-text { display: flex; flex-direction: column; gap: 1px; }
-.action-name { font-size: 13px; color: #c4b8e0; font-weight: 500; }
-.action-desc { font-size: 11px; color: #4a4060; }
+.action-name { font-size: 13px; color: #c4b8e0; font-weight: 500; transition: color 0.35s; }
+body[data-theme="light"] .action-name { color: #2d2542; }
+.action-desc { font-size: 11px; color: #4a4060; transition: color 0.35s; }
+body[data-theme="light"] .action-desc { color: #7a6e9a; }
 
 .recent-cards { display: flex; flex-direction: column; gap: 1px; }
 
@@ -138,18 +216,32 @@ body {
     transition: background 0.1s;
 }
 .recent-card:hover { background: rgba(167,139,250,0.07); }
+body[data-theme="light"] .recent-card:hover { background: rgba(124,92,250,0.07); }
 
 .rc-arrow { font-size: 22px; color: #3d3558; flex-shrink: 0; transition: color 0.1s; }
 .recent-card:hover .rc-arrow { color: #a78bfa; }
+body[data-theme="light"] .rc-arrow { color: #d4cef0; }
+body[data-theme="light"] .recent-card:hover .rc-arrow { color: #7c5cfa; }
 
 .rc-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
 .rc-name { font-size: 13px; color: #c4b8e0; font-weight: 500; transition: color 0.1s; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body[data-theme="light"] .rc-name { color: #2d2542; }
 .recent-card:hover .rc-name { color: #e8e0f8; }
-.rc-meta { font-size: 11px; color: #4a4060; display: flex; gap: 6px; }
+body[data-theme="light"] .recent-card:hover .rc-name { color: #1a1530; }
+.rc-meta { font-size: 11px; color: #4a4060; display: flex; gap: 6px; transition: color 0.35s; }
+body[data-theme="light"] .rc-meta { color: #7a6e9a; }
 .rc-time { flex-shrink: 0; }
 
-.home-tasks-widget { background: #201d2b; border: 1px solid #2d2840; border-radius: 10px; overflow: hidden; }
+.home-tasks-widget {
+    background: #201d2b;
+    border: 1px solid #2d2840;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: background 0.35s, border-color 0.35s;
+}
+body[data-theme="light"] .home-tasks-widget { background: #f0eef8; border-color: #d4cef0; }
 .htw-empty { padding: 14px 13px; font-size: 12px; color: #3d3558; }
+body[data-theme="light"] .htw-empty { color: #7a6e9a; }
 .htw-row {
     display: flex;
     align-items: center;
@@ -157,61 +249,92 @@ body {
     padding: 7px 13px;
     border-bottom: 1px solid rgba(45,40,64,0.5);
     transition: background 0.1s;
+    cursor: pointer;
 }
+body[data-theme="light"] .htw-row { border-bottom-color: rgba(212,206,240,0.5); }
 .htw-row:last-child { border-bottom: none; }
+.htw-row:hover { background: rgba(167,139,250,0.05); }
+body[data-theme="light"] .htw-row:hover { background: rgba(124,92,250,0.05); }
 .htw-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.htw-name { font-size: 12px; color: #c4b8e0; flex: 1; }
-.htw-due { font-size: 11px; color: #4a4060; }
+.htw-name { font-size: 12px; color: #c4b8e0; flex: 1; transition: color 0.35s; }
+body[data-theme="light"] .htw-name { color: #2d2542; }
+.htw-due { font-size: 11px; color: #4a4060; transition: color 0.35s; }
+body[data-theme="light"] .htw-due { color: #7a6e9a; }
 .htw-due.overdue { color: #f87171; }
 .htw-actions { display: flex; align-items: center; gap: 3px; flex-shrink: 0; }
 .htw-btn { background: none; border: none; color: #4a4060; cursor: pointer; width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: background 0.1s, color 0.1s; flex-shrink: 0; }
 .htw-btn:hover { background: rgba(167,139,250,0.12); color: #a78bfa; }
 .htw-btn-delete:hover { background: rgba(248,113,113,0.1); color: #f87171; }
-.htw-row { cursor: pointer; }
-.htw-row:hover { background: rgba(167,139,250,0.05); }
 @keyframes taskHighlight { 0%,100%{background:transparent} 20%,80%{background:rgba(167,139,250,0.15)} }
 .task-highlight { animation: taskHighlight 1.8s ease; }
-.muted { color: #3d3558; font-size: 12px; }
+.muted { color: #3d3558; font-size: 12px; transition: color 0.35s; }
+body[data-theme="light"] .muted { color: #7a6e9a; }
 
 .task-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; }
-.task-modal-content { background: #201d2b; border: 1px solid #2d2840; border-radius: 14px; padding: 22px; width: 360px; display: flex; flex-direction: column; gap: 14px; }
+.task-modal-content {
+    background: #201d2b;
+    border: 1px solid #2d2840;
+    border-radius: 14px;
+    padding: 22px;
+    width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: background 0.35s, border-color 0.35s;
+}
+body[data-theme="light"] .task-modal-content { background: #f0eef8; border-color: #d4cef0; }
 .task-modal-header { display: flex; align-items: center; justify-content: space-between; }
-.task-modal-title { font-size: 15px; font-weight: 600; color: #e8e0f8; }
+.task-modal-title { font-size: 15px; font-weight: 600; color: #e8e0f8; transition: color 0.35s; }
+body[data-theme="light"] .task-modal-title { color: #1a1530; }
 .task-modal-close { background: none; border: none; color: #6b5f8a; cursor: pointer; font-size: 18px; padding: 2px 4px; border-radius: 4px; line-height: 1; }
 .task-modal-close:hover { color: #e8e0f8; }
+body[data-theme="light"] .task-modal-close:hover { color: #1a1530; }
 .task-modal-body { display: flex; flex-direction: column; gap: 12px; }
 .task-modal-field { display: flex; flex-direction: column; gap: 5px; }
 .task-modal-label { font-size: 12px; color: #6b5f8a; }
-.task-modal-input, .task-modal-textarea { background: #18161f; border: 1px solid #2d2840; color: #c4b8e0; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-family: inherit; outline: none; color-scheme: dark; }
+.task-modal-input, .task-modal-textarea {
+    background: #18161f;
+    border: 1px solid #2d2840;
+    color: #c4b8e0;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    color-scheme: dark;
+    transition: background 0.35s, border-color 0.15s, color 0.35s;
+}
+body[data-theme="light"] .task-modal-input,
+body[data-theme="light"] .task-modal-textarea { background: #faf9fe; border-color: #d4cef0; color: #2d2542; color-scheme: light; }
 .task-modal-input:focus, .task-modal-textarea:focus { border-color: #a78bfa; }
+body[data-theme="light"] .task-modal-input:focus,
+body[data-theme="light"] .task-modal-textarea:focus { border-color: #7c5cfa; }
 .task-modal-textarea { resize: vertical; min-height: 60px; }
 .task-modal-row { display: flex; gap: 12px; }
 .task-modal-row .task-modal-field { flex: 1; }
 .task-modal-field-color input[type="color"] { width: 40px; height: 32px; border-radius: 6px; border: 1px solid #2d2840; background: none; cursor: pointer; padding: 2px; }
 .task-modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
-.task-modal-cancel { background: none; border: 1px solid #2d2840; color: #6b5f8a; font-size: 13px; font-family: inherit; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+.task-modal-cancel { background: none; border: 1px solid #2d2840; color: #6b5f8a; font-size: 13px; font-family: inherit; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: background 0.1s, color 0.1s; }
+body[data-theme="light"] .task-modal-cancel { border-color: #d4cef0; }
 .task-modal-cancel:hover { background: rgba(167,139,250,0.08); color: #c4b8e0; }
-.task-modal-submit { background: #a78bfa; color: #13111a; font-size: 13px; font-family: inherit; font-weight: 600; padding: 8px 16px; border-radius: 8px; cursor: pointer; border: none; }
+.task-modal-submit { background: #a78bfa; color: #13111a; font-size: 13px; font-family: inherit; font-weight: 600; padding: 8px 16px; border-radius: 8px; cursor: pointer; border: none; transition: opacity 0.15s; }
+body[data-theme="light"] .task-modal-submit { background: #7c5cfa; }
 .task-modal-submit:hover { opacity: 0.85; }
 
 .task-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
 .task-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 6px; border-radius: 8px; transition: background 0.1s; cursor: default; }
 .task-item:hover { background: rgba(167,139,250,0.06); }
+body[data-theme="light"] .task-item:hover { background: rgba(124,92,250,0.06); }
 .task-item:hover .task-actions { opacity: 1; }
 .task-item:hover .task-preview { display: flex; }
 .task-done .task-title { text-decoration: line-through; color: #4a4060; }
 .task-done .task-color { opacity: 0.25; }
 .task-overdue .task-date { color: #f87171; }
-.task-overdue .task-color { background: #f87171 !important; --task-col: #f87171; }
-.task-color {
-    width: 3px;
-    border-radius: 2px;
-    flex-shrink: 0;
-    align-self: stretch;
-    min-height: 20px;
-}
+.task-overdue .task-color { background: #f87171 !important; }
+.task-color { width: 3px; border-radius: 2px; flex-shrink: 0; align-self: stretch; min-height: 20px; }
 .task-info { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.task-title { font-size: 13px; color: #c4b8e0; }
+.task-title { font-size: 13px; color: #c4b8e0; transition: color 0.35s; }
+body[data-theme="light"] .task-title { color: #2d2542; }
 .task-preview { display: none; flex-direction: column; gap: 2px; }
 .task-desc, .task-date { font-size: 11px; color: #6b5f8a; }
 .task-actions { display: flex; gap: 2px; opacity: 0; transition: opacity 0.1s; flex-shrink: 0; }
@@ -219,14 +342,16 @@ body {
 .task-btn:hover { background: rgba(167,139,250,0.12); color: #e2d9f3; }
 .task-btn-delete:hover { background: rgba(248,113,113,0.12); color: #f87171; }
 
-.tasks-filter-row { display: flex; align-items: center; gap: 2px; padding: 8px 10px; border-bottom: 1px solid #2d2840; flex-shrink: 0; }
+.tasks-filter-row { display: flex; align-items: center; gap: 2px; padding: 8px 10px; border-bottom: 1px solid #2d2840; flex-shrink: 0; transition: border-color 0.35s; }
+body[data-theme="light"] .tasks-filter-row { border-color: #d4cef0; }
 .tasks-filter-btn { background: none; border: none; color: #6b5f8a; font-size: 11px; font-family: inherit; padding: 3px 8px; border-radius: 4px; cursor: pointer; transition: background 0.1s, color 0.1s; }
 .tasks-filter-btn.active { background: rgba(167,139,250,0.15); color: #a78bfa; }
+body[data-theme="light"] .tasks-filter-btn.active { background: rgba(124,92,250,0.15); color: #7c5cfa; }
 .tasks-filter-btn:hover:not(.active) { background: #13111a; color: #c4b8e0; }
+body[data-theme="light"] .tasks-filter-btn:hover:not(.active) { background: #e6e2f4; color: #2d2542; }
 .tasks-add-btn { background: none; border: none; color: #6b5f8a; cursor: pointer; width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 15px; margin-left: auto; transition: background 0.1s, color 0.1s; }
 .tasks-add-btn:hover { background: rgba(167,139,250,0.12); color: #a78bfa; }
 
-/* terminal login */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -260,33 +385,134 @@ body {
 .term-cursor { display: inline-block; width: 8px; height: 15px; background: #a78bfa; vertical-align: middle; animation: tblink 1.1s step-end infinite; }
 @keyframes tblink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-/* profile popover */
 .profile-popover {
     position: fixed; bottom: 62px; left: 60px; width: 224px;
     background: #201d2b; border: 1px solid #2d2840; border-radius: 14px;
     overflow: hidden; display: none; flex-direction: column;
     z-index: 9999; box-shadow: 0 8px 32px rgba(0,0,0,0.6);
     font-family: system-ui, -apple-system, sans-serif;
+    transition: background 0.35s, border-color 0.35s;
 }
+body[data-theme="light"] .profile-popover { background: #f0eef8; border-color: #d4cef0; }
 .profile-popover-top {
     display: flex; align-items: center; gap: 12px; padding: 16px 14px 14px;
     background: linear-gradient(135deg, rgba(167,139,250,0.08) 0%, transparent 100%);
     border-bottom: 1px solid #2d2840;
+    transition: border-color 0.35s;
 }
+body[data-theme="light"] .profile-popover-top { border-color: #d4cef0; }
 .profile-popover-avatar {
     width: 42px; height: 42px; border-radius: 12px;
     background: rgba(167,139,250,0.18); display: flex; align-items: center;
     justify-content: center; font-size: 20px; font-weight: 800; color: #a78bfa;
     flex-shrink: 0; border: 1.5px solid rgba(167,139,250,0.25);
+    transition: color 0.35s;
 }
+body[data-theme="light"] .profile-popover-avatar { color: #7c5cfa; }
 .profile-popover-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.profile-popover-name { font-size: 13px; font-weight: 700; color: #e2d9f3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.profile-popover-name { font-size: 13px; font-weight: 700; color: #e2d9f3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.35s; }
+body[data-theme="light"] .profile-popover-name { color: #1a1530; }
 .profile-popover-email { font-size: 11px; color: #6b5f8a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .profile-popover-divider { display: none; }
 .profile-popover-actions { padding: 6px; display: flex; flex-direction: column; gap: 1px; }
 .profile-popover-action { font-size: 12px; color: #6b5f8a; cursor: pointer; padding: 8px 10px; border-radius: 8px; transition: background 0.12s, color 0.12s; display: flex; align-items: center; gap: 9px; }
 .profile-popover-action:hover { background: rgba(167,139,250,0.08); color: #e2d9f3; }
+body[data-theme="light"] .profile-popover-action:hover { background: rgba(124,92,250,0.08); color: #1a1530; }
 .profile-popover-action.danger:hover { background: rgba(248,113,113,0.08); color: #f87171; }
+
+.settings-content {
+    padding: 12px 10px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(167,139,250,0.2) transparent;
+}
+.settings-content::-webkit-scrollbar { width: 4px; }
+.settings-content::-webkit-scrollbar-thumb { background: rgba(167,139,250,0.2); border-radius: 2px; }
+
+.settings-group {
+    background: #201d2b;
+    border: 1px solid #2d2840;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: background 0.35s, border-color 0.35s;
+}
+body[data-theme="light"] .settings-group { background: #f0eef8; border-color: #d4cef0; }
+
+.settings-group-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #6b5f8a;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 12px 6px;
+    background: rgba(167,139,250,0.04);
+    border-bottom: 1px solid #2d2840;
+    transition: border-color 0.35s;
+}
+body[data-theme="light"] .settings-group-label { border-color: #d4cef0; }
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid #2d2840;
+    transition: background 0.1s, border-color 0.35s;
+}
+body[data-theme="light"] .setting-item { border-color: #d4cef0; }
+.setting-item:last-child { border-bottom: none; }
+.setting-item:hover { background: rgba(167,139,250,0.04); }
+body[data-theme="light"] .setting-item:hover { background: rgba(124,92,250,0.04); }
+
+.setting-name { font-size: 12px; color: #c4b8e0; font-weight: 400; transition: color 0.35s; }
+body[data-theme="light"] .setting-name { color: #2d2542; }
+
+.setting-select {
+    background: #18161f;
+    border: 1px solid #2d2840;
+    color: #c4b8e0;
+    font-size: 11px;
+    padding: 3px 20px 3px 7px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    outline: none;
+    flex-shrink: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%236b5f8a'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    min-width: 80px;
+    max-width: 110px;
+    transition: border-color 0.15s, background-color 0.35s, color 0.35s;
+}
+.setting-select-sm { min-width: 52px; max-width: 62px; }
+.setting-select:focus { border-color: #a78bfa; }
+body[data-theme="light"] .setting-select { background-color: #faf9fe; border-color: #d4cef0; color: #2d2542; }
+body[data-theme="light"] .setting-select:focus { border-color: #7c5cfa; }
+.setting-select option { background: #201d2b; color: #c4b8e0; }
+body[data-theme="light"] .setting-select option { background: #f0eef8; color: #2d2542; }
+
+.setting-toggle { position: relative; display: inline-flex; align-items: center; cursor: pointer; flex-shrink: 0; }
+.setting-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+.setting-toggle-track {
+    width: 30px; height: 17px; background: #18161f; border: 1px solid #2d2840;
+    border-radius: 9px; position: relative; transition: background 0.18s, border-color 0.18s; display: block;
+}
+body[data-theme="light"] .setting-toggle-track { background: #e6e2f4; border-color: #d4cef0; }
+.setting-toggle input:checked + .setting-toggle-track { background: #a78bfa; border-color: #a78bfa; }
+body[data-theme="light"] .setting-toggle input:checked + .setting-toggle-track { background: #7c5cfa; border-color: #7c5cfa; }
+.setting-toggle-thumb {
+    position: absolute; top: 2px; left: 2px; width: 11px; height: 11px;
+    background: #6b5f8a; border-radius: 50%; transition: transform 0.18s, background 0.18s; display: block;
+}
+body[data-theme="light"] .setting-toggle-thumb { background: #7a6e9a; }
+.setting-toggle input:checked + .setting-toggle-track .setting-toggle-thumb { transform: translateX(13px); background: #13111a; }
+body[data-theme="light"] .setting-toggle input:checked + .setting-toggle-track .setting-toggle-thumb { background: #fff; }
 </style>
 </head>
 <body>
@@ -342,11 +568,100 @@ body {
 
     <div class="sidebar-panel" data-view="settings" style="display:none;">
         <div class="sidebar-header"><div class="sidebar-header-title">Settings</div></div>
-        <div class="sidebar-content settings-content" style="padding:12px">
-            <p style="font-size:12px;color:var(--text-muted)">Open the editor to access full settings.</p>
+        <div class="sidebar-content settings-content">
+            <div class="settings-group">
+                <div class="settings-group-label">Appearance</div>
+                <div class="setting-item">
+                    <span class="setting-name">Theme</span>
+                    <select class="setting-select" data-setting="theme">
+                        <option value="dark">Dark</option>
+                        <option value="light">Light</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-name">Font Size</span>
+                    <select class="setting-select" data-setting="fontSize">
+                        <option value="12">12px</option>
+                        <option value="13">13px</option>
+                        <option value="14" selected>14px</option>
+                        <option value="15">15px</option>
+                        <option value="16">16px</option>
+                        <option value="18">18px</option>
+                        <option value="20">20px</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-name">Cursor Style</span>
+                    <select class="setting-select" data-setting="cursorStyle">
+                        <option value="line" selected>Line</option>
+                        <option value="block">Block</option>
+                        <option value="underline">Underline</option>
+                        <option value="line-thin">Thin Line</option>
+                        <option value="block-outline">Block Outline</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-name">Cursor Blinking</span>
+                    <select class="setting-select" data-setting="cursorBlinking">
+                        <option value="blink" selected>Blink</option>
+                        <option value="smooth">Smooth</option>
+                        <option value="phase">Phase</option>
+                        <option value="expand">Expand</option>
+                        <option value="solid">Solid</option>
+                    </select>
+                </div>
+            </div>
+            <div class="settings-group">
+                <div class="settings-group-label">Editor</div>
+                <div class="setting-item">
+                    <span class="setting-name">Tab Size</span>
+                    <select class="setting-select setting-select-sm" data-setting="tabSize">
+                        <option value="2">2</option>
+                        <option value="4" selected>4</option>
+                        <option value="8">8</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-name">Line Numbers</span>
+                    <select class="setting-select" data-setting="lineNumbers">
+                        <option value="on" selected>On</option>
+                        <option value="off">Off</option>
+                        <option value="relative">Relative</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-name">Whitespace</span>
+                    <select class="setting-select" data-setting="renderWhitespace">
+                        <option value="none" selected>None</option>
+                        <option value="boundary">Boundary</option>
+                        <option value="selection">Selection</option>
+                        <option value="all">All</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-name">Word Wrap</span>
+                    <label class="setting-toggle">
+                        <input type="checkbox" data-setting="wordWrap" data-on="on" data-off="off">
+                        <span class="setting-toggle-track"><span class="setting-toggle-thumb"></span></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-name">Smooth Scrolling</span>
+                    <label class="setting-toggle">
+                        <input type="checkbox" data-setting="smoothScrolling" data-on="true" data-off="false">
+                        <span class="setting-toggle-track"><span class="setting-toggle-thumb"></span></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-name">Bracket Colors</span>
+                    <label class="setting-toggle">
+                        <input type="checkbox" data-setting="bracketPairColorization" data-on="true" data-off="false" checked>
+                        <span class="setting-toggle-track"><span class="setting-toggle-thumb"></span></span>
+                    </label>
+                </div>
+            </div>
         </div>
     </div>
-
 </div>
 
 <div class="home-main">
@@ -356,6 +671,12 @@ body {
     <div class="topbar-right">
         <span class="topbar-time" id="topbarTime"></span>
         <div class="topbar-actions">
+            <button class="btn-theme" id="themeToggleBtn" title="Toggle theme">
+                <i class="codicon codicon-color-mode btn-theme-icon" id="themeIcon"></i>
+                <div class="btn-theme-track">
+                    <div class="btn-theme-thumb"></div>
+                </div>
+            </button>
             <button class="btn-login" id="loginBtn">
                 <i class="codicon codicon-account"></i>
                 Sign in
@@ -451,7 +772,6 @@ body {
     </div>
 </div>
 
-
 <div class="profile-popover" id="profilePopover">
     <div class="profile-popover-top">
         <div class="profile-popover-avatar" id="popoverAvatar">?</div>
@@ -466,9 +786,6 @@ body {
         </div>
     </div>
 </div>
-
-
-
 
 <div class="task-modal" id="taskModal">
     <div class="task-modal-content">
@@ -534,6 +851,19 @@ document.querySelectorAll('.activity-icon[data-view]').forEach(icon => {
 document.getElementById('sideNewProject').onclick = () => document.getElementById('newProjectLink').onclick()
 document.getElementById('sideOpenFile').onclick   = () => document.getElementById('openFileLink').onclick()
 document.getElementById('sideOpenFolder').onclick = () => document.getElementById('openFolderLink').onclick()
+
+const savedTheme = localStorage.getItem('slate_theme') || 'dark'
+document.body.setAttribute('data-theme', savedTheme)
+
+const themeToggleBtn = document.getElementById('themeToggleBtn')
+themeToggleBtn.onclick = () => {
+    const current = document.body.getAttribute('data-theme')
+    const next = current === 'light' ? 'dark' : 'light'
+    document.body.setAttribute('data-theme', next)
+    localStorage.setItem('slate_theme', next)
+    const themeSelect = document.querySelector('.setting-select[data-setting="theme"]')
+    if (themeSelect) themeSelect.value = next
+}
 
 const loginModal    = document.getElementById('loginModal')
 const termLines     = document.getElementById('termLines')
@@ -771,7 +1101,7 @@ function createTask(title, desc, date, color, done) {
     li.className = 'task-item' + (done ? ' task-done' : '') + (overdue ? ' task-overdue' : '')
     li.dataset.title = title; li.dataset.desc = desc || ''; li.dataset.date = date || ''; li.dataset.color = color || '#a78bfa'
     const bar = document.createElement('div')
-    bar.className = 'task-color'; bar.style.setProperty('--task-col', color); bar.style.background = 'var(--task-col)'
+    bar.className = 'task-color'; bar.style.background = color
     const info = document.createElement('div'); info.className = 'task-info'
     const name = document.createElement('span'); name.className = 'task-title'; name.textContent = title
     info.appendChild(name)
@@ -850,10 +1180,6 @@ function getRelTime(ts) {
     if (d === 1) return 'yesterday'
     if (d < 7) return d + 'd ago'
     return new Date(ts).toLocaleDateString('en', { month: 'short', day: 'numeric' })
-}
-
-function tagClass(ext) {
-    return { html: 't-html', htm: 't-html', css: 't-css', scss: 't-css', js: 't-js', mjs: 't-js', ts: 't-ts', tsx: 't-ts', py: 't-py' }[ext] || ''
 }
 
 function loadRecents() {
@@ -1018,12 +1344,46 @@ document.addEventListener('click', e => {
     }
 })
 
+function syncSettingsUI() {
+    document.querySelectorAll('.setting-select[data-setting]').forEach(sel => {
+        const key = sel.dataset.setting
+        const val = localStorage.getItem('slate_' + key) || localStorage.getItem(ukey('slate_' + key))
+        if (val) sel.value = val
+    })
+    document.querySelectorAll('.setting-toggle input[data-setting]').forEach(chk => {
+        const key = chk.dataset.setting
+        const val = localStorage.getItem('slate_' + key) || localStorage.getItem(ukey('slate_' + key))
+        if (val !== null) chk.checked = val === 'true' || val === 'on'
+    })
+}
+
+document.querySelectorAll('.setting-select[data-setting]').forEach(sel => {
+    sel.addEventListener('change', () => {
+        const key = sel.dataset.setting
+        localStorage.setItem('slate_' + key, sel.value)
+        localStorage.setItem(ukey('slate_' + key), sel.value)
+        if (key === 'theme') {
+            document.body.setAttribute('data-theme', sel.value)
+        }
+    })
+})
+
+document.querySelectorAll('.setting-toggle input[data-setting]').forEach(chk => {
+    chk.addEventListener('change', () => {
+        const key = chk.dataset.setting
+        const val = chk.checked ? (chk.dataset.on || 'true') : (chk.dataset.off || 'false')
+        localStorage.setItem('slate_' + key, val)
+        localStorage.setItem(ukey('slate_' + key), val)
+    })
+})
+
 updateClock()
 setInterval(updateClock, 60000)
 loadTasks()
 loadRecents()
 loadHomeTasks()
 updateGreeting()
+syncSettingsUI()
 </script>
 <script>
 (function() {
