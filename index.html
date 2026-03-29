@@ -76,8 +76,8 @@
                     </div>
                     <div class="search-input-row">
                         <input id="replaceInput" class="search-input" placeholder="Replace" type="text" spellcheck="false">
-                        <button id="replaceOne" class="search-opt-btn" title="Replace">⇄</button>
-                        <button id="replaceAll" class="search-opt-btn" title="Replace All">⇉</button>
+                        <button id="replaceOne" class="search-opt-btn" title="Replace">&#x21C4;</button>
+                        <button id="replaceAll" class="search-opt-btn" title="Replace All">&#x21C9;</button>
                     </div>
                 </div>
                 <div class="search-meta" id="searchMeta"></div>
@@ -182,12 +182,23 @@
                     </div>
                 </div>
 
+                <div class="settings-group">
+                    <div class="settings-group-label">Vim</div>
+                    <div class="setting-item">
+                        <span class="setting-name">Vim Mode</span>
+                        <label class="setting-toggle">
+                            <input type="checkbox" data-setting="vimMode" data-on="true" data-off="false" onchange="if(window.vimToggle)window.vimToggle()">
+                            <span class="setting-toggle-track"><span class="setting-toggle-thumb"></span></span>
+                        </label>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
     <div class="main">
-        <div class="topbar" id="mainTopbar">
+                <div class="topbar" id="mainTopbar">
             <div class="topbar-left">
                 <div class="topbar-logo">Slate</div>
                 <div id="unsaved-badge" class="unsaved-badge" style="display:none;"></div>
@@ -245,7 +256,6 @@
                     <i class="codicon codicon-eye-closed" style="font-size:32px;margin-bottom:8px;opacity:0.4"></i>
                     <span>Preview only available for HTML files</span>
                 </div>
-
             </div>
         </div>
     </div>
@@ -313,116 +323,19 @@
     if (!localStorage.getItem("slate_project_open")) {
         location.replace("home.html")
     }
-
-    (function() {
-        var saved = localStorage.getItem('slate_theme') || 'dark'
-        document.body.setAttribute('data-theme', saved)
-
-        var themeBtn = document.getElementById('themeToggleBtn')
-        themeBtn.addEventListener('click', function() {
-            var current = document.body.getAttribute('data-theme')
-            var next = current === 'light' ? 'dark' : 'light'
-            document.body.setAttribute('data-theme', next)
-            localStorage.setItem('slate_theme', next)
-            if (window.setEditorTheme) window.setEditorTheme(next)
-            var themeSelect = document.querySelector('.setting-select[data-setting="theme"]')
-            if (themeSelect) themeSelect.value = next
-        })
-
-        function updateClock() {
-            var el = document.getElementById('topbarTime')
-            if (el) el.textContent = new Date().toLocaleDateString('en', { weekday: 'short', month: 'short', day: 'numeric' })
-        }
-        updateClock()
-        setInterval(updateClock, 60000)
-
-        var savedUser = localStorage.getItem('slate_user')
-        if (savedUser) {
-            var btn = document.getElementById('loginBtn')
-            var txt = document.getElementById('loginBtnText')
-            if (btn && txt) txt.textContent = savedUser
-        }
-
-        var loginBtn = document.getElementById('loginBtn')
-        if (loginBtn) {
-            loginBtn.addEventListener('click', function() {
-                var user = localStorage.getItem('slate_user')
-                if (!user) {
-                    var signInEl = document.getElementById('popoverSignIn')
-                    if (signInEl) signInEl.click()
-                }
-            })
-        }
-
-        window.updateUnsavedBadge = function(count) {
-            var badge = document.getElementById('unsaved-badge')
-            if (!badge) return
-            if (count > 0) {
-                badge.textContent = count + ' unsaved'
-                badge.style.display = 'inline-flex'
-            } else {
-                badge.style.display = 'none'
-            }
-        }
-
-        window.addEventListener('beforeunload', function(e) {
-            var dots = document.querySelectorAll('.tab-label')
-            var hasUnsaved = false
-            dots.forEach(function(el) { if (el.textContent.startsWith('●')) hasUnsaved = true })
-            if (hasUnsaved) {
-                e.preventDefault()
-                e.returnValue = ''
-            }
-        })
-    })()
 </script>
 <script src="https://unpkg.com/monaco-editor@0.44.0/min/vs/loader.js"></script>
 <script src="editor.js"></script>
 <script src="sidebar.js"></script>
 <script src="preview.js"></script>
-<script>
-(function() {
-    function syncUnsavedBadge() {
-        if (!window.updateUnsavedBadge) return
-        var tabs = document.querySelectorAll('.tab-label')
-        var count = 0
-        tabs.forEach(function(el) { if (el.textContent.startsWith('●')) count++ })
-        window.updateUnsavedBadge(count)
-    }
+<script src="vim.js"></script>
 
-    var _tabBarObs = new MutationObserver(syncUnsavedBadge)
-    var tabBar = document.getElementById('tabBar')
-    if (tabBar) _tabBarObs.observe(tabBar, { childList: true, subtree: true, characterData: true })
-
-    var loginBtn = document.getElementById('loginBtn')
-    var loginTxt = document.getElementById('loginBtnText')
-    if (loginBtn && loginTxt) {
-        var u = localStorage.getItem('slate_user')
-        if (u) { loginTxt.textContent = u }
-        loginBtn.onclick = function() {
-            if (!localStorage.getItem('slate_user')) {
-                var si = document.getElementById('popoverSignIn')
-                if (si) si.click()
-            }
-        }
-    }
-
-    window.addEventListener('slate-login', function(e) {
-        if (loginTxt && e.detail) loginTxt.textContent = e.detail
-    })
-
-    var _origFinish = window._slateLoginFinish
-    window._slateLoginNotify = function(user) {
-        if (loginTxt) loginTxt.textContent = user
-    }
-})()
-</script>
 <div class="profile-popover" id="profilePopover">
     <div class="profile-popover-top">
         <div class="profile-popover-avatar" id="popoverAvatar">?</div>
         <div class="profile-popover-info">
             <div class="profile-popover-name" id="popoverName">Not signed in</div>
-            <div class="profile-popover-email" id="popoverEmail">—</div>
+            <div class="profile-popover-email" id="popoverEmail">&mdash;</div>
         </div>
     </div>
     <div class="profile-popover-tasks" id="popoverTasks">
@@ -441,20 +354,7 @@
             <div class="ppt-label">Overdue</div>
         </div>
     </div>
-    <div class="profile-popover-stats" id="popoverStats" style="display:none;">
-        <div class="profile-popover-stat">
-            <span class="profile-popover-stat-num" id="popoverStatTotal">0</span>
-            <span class="profile-popover-stat-label">tasks</span>
-        </div>
-        <div class="profile-popover-stat">
-            <span class="profile-popover-stat-num" id="popoverStatDone">0</span>
-            <span class="profile-popover-stat-label">done</span>
-        </div>
-        <div class="profile-popover-stat">
-            <span class="profile-popover-stat-num popover-overdue" id="popoverStatOverdue">0</span>
-            <span class="profile-popover-stat-label">overdue</span>
-        </div>
-    </div>
+    <div class="profile-popover-stats" id="popoverStats" style="display:none;"></div>
     <div class="profile-popover-actions">
         <div class="profile-popover-action danger" id="popoverLogout" style="display:none;">
             <i class="codicon codicon-sign-out"></i> Sign out
@@ -463,36 +363,6 @@
             <i class="codicon codicon-account"></i> Sign in
         </div>
     </div>
-</div>
-
-<div class="modal-overlay" id="loginModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;z-index:10000;font-family:'Menlo','Consolas','Monaco',monospace;">
-    <div style="width:520px;background:#0d0b12;border-radius:8px;border:1px solid #2d2840;overflow:hidden;">
-        <div style="height:32px;background:#1a1726;display:flex;align-items:center;padding:0 12px;border-bottom:1px solid #2d2840;">
-            <span style="font-size:11px;color:#4a4060;font-family:inherit;flex:1;" id="idxTermTitle">slate-auth</span>
-            <div id="idxTermClose" style="width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:3px;" onmouseenter="this.style.background='#5a1e1e'" onmouseleave="this.style.background='transparent'">
-                <svg width="10" height="10" viewBox="0 0 10 10"><line x1="1.5" y1="1.5" x2="8.5" y2="8.5" stroke="#4a4060" stroke-width="1.3"/><line x1="8.5" y1="1.5" x2="1.5" y2="8.5" stroke="#4a4060" stroke-width="1.3"/></svg>
-            </div>
-        </div>
-        <div style="padding:16px 20px 20px;display:flex;flex-direction:column;min-height:200px;">
-            <div style="font-size:13px;color:#3d3558;line-height:1.8;font-family:inherit;">Arch Linux 6.8.1-arch1-1 (tty1)</div>
-            <div style="font-size:13px;color:#c4b8e0;line-height:1.8;"> </div>
-            <div id="idxTermLines"></div>
-            <div id="idxTermInputRow" style="display:none;align-items:center;font-size:13px;line-height:1.8;font-family:inherit;">
-                <span id="idxTermPrompt" style="color:#a78bfa;white-space:pre;"></span>
-                <input id="idxTermInput" autocomplete="off" spellcheck="false" style="background:none;border:none;outline:none;color:#e2d9f3;font-size:13px;font-family:inherit;caret-color:#a78bfa;flex:1;width:0;">
-            </div>
-            <div style="display:flex;align-items:center;font-size:13px;line-height:1.8;" id="idxTermCursor">
-                <span style="display:inline-block;width:8px;height:15px;background:#a78bfa;vertical-align:middle;animation:tblink 1.1s step-end infinite;"></span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-@keyframes tblink { 0%,100%{opacity:1} 50%{opacity:0} }
-.modal-overlay { display: none; }
-.modal-overlay.open { display: flex !important; }
-</style>
 
 <script>
 (function() {
@@ -626,5 +496,7 @@
     }
 })()
 </script>
+
+</div>
 </body>
 </html>
